@@ -5,37 +5,69 @@
 {% block content %}
 
 <!--Logo-->
-<div class="logo">
-    <a href="{% url 'home' %}">The Assessment System</a>
+<div class="col-12" id="logo">
+    <h1><a href="{% url 'home' %}">The Assessment System</a></h1>
 </div>
 
 
 <!--Navbar-->
-<div class="navbar">
+<div class="col-12" id="navbar">
     {% if not user.is_authenticated %}
     <a href="{% url 'login' %}">Log In</a>
     <a href="{% url 'signup' %}">Sign Up</a>
     {% else %}
+    {% if user.is_admin %}
+    <a href="/admin/">Admin</a>
+    {% endif %}
     <a href="{% url 'logout' %}">Log Out</a>
     {% endif %}
 </div>
 
 <!--Messages-->
-{% if messages %}
-<ul>
-    {% for message in messages %}
-    {{ message }}
-    {% endfor %}
-</ul>
+<div class="col-12" id="messages">
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+
+{% if not user.is_authenticated %}
+<!--Anonymous user Home Page-->
+<div class="col-3" id="left-side-anonymous"></div>
+
+<div class="col-6" id="main-content-anonymous">
+    {% block main-content-anonymous %}
+    {% endblock %}
+</div>
+
+<div class="col-3" id="right-side-anonymous"></div>
+
 {% endif %}
 
 <!--Teacher Home Page-->
 {% if user.role == 'Teacher' %}
 
-<h2>Your assessments:</h2>
-{% for assessment in assessments %}
-<ul>{{ assessment }}</ul>
-{% endfor %}
+<div class="col-3" id="left-side-teacher">
+    <a href="">Create Assessment</a>
+    <a href="">View Assessment</a>
+    <a href="">Edit Assessment</a>
+    <a href="">Delete Assessment</a>
+</div>
+
+<div class="col-6" id="main-content-teacher">
+    {% block main-content-teacher %}
+    {% endblock %}
+</div>
+
+<div class="col-3" id="right-side-teacher">
+    <h3>Your assessments:</h3>
+    {% for assessment in assessments %}
+    <li>{{ assessment }}</li>
+    {% endfor %}
+</div>
 
 
 <!--Student Home Page-->
