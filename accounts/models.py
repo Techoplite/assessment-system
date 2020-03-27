@@ -73,6 +73,9 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
+    def __eq__(self, other):
+        return self.id == other.id
+
     @property
     def is_staff(self):
         "Is the user a member of staff?"

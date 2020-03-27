@@ -3,10 +3,44 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-{% if not user.is_authenticated %}
+
+<!--Logo-->
+<div class="logo">
+    <a href="{% url 'home' %}">The Assessment System</a>
+</div>
+
+
+<!--Navbar-->
+<div class="navbar">
+    {% if not user.is_authenticated %}
     <a href="{% url 'login' %}">Log In</a>
     <a href="{% url 'signup' %}">Sign Up</a>
     {% else %}
     <a href="{% url 'logout' %}">Log Out</a>
     {% endif %}
+</div>
+
+<!--Messages-->
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+</ul>
+{% endif %}
+
+<!--Teacher Home Page-->
+{% if user.role == 'Teacher' %}
+
+<h2>Your assessments:</h2>
+{% for assessment in assessments %}
+<ul>{{ assessment }}</ul>
+{% endfor %}
+
+
+<!--Student Home Page-->
+{% elif user.role == 'Student' %}
+student
+{% endif %}
+
 {% endblock %}

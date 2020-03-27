@@ -1,11 +1,11 @@
 from django.shortcuts import render
 
-# Create your views here.
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from accounts.admin import UserCreationForm
-from accounts.forms import LoginForm
+from .admin import UserCreationForm
+from .forms import LoginForm
+from core.views import home
 
 
 def signup(request):
@@ -32,10 +32,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, f'Hi {user.first_name}, you have successfully logged in.')
-            if user.role == 'Teacher':
-                return redirect(home)
-            else:
-                return redirect(home)
+            return redirect(home)
     template_name = 'login.html'
     context = {'form': form}
     return render(request, template_name, context)
