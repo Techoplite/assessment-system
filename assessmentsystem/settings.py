@@ -61,6 +61,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'assessmentsystem/templates/assessmentsystem'),
             os.path.join(BASE_DIR, 'accounts/templates/accounts'),
             os.path.join(BASE_DIR, 'core/templates/core'),
+            os.path.join(BASE_DIR, 'assessment/templates/assessment'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

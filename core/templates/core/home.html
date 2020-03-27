@@ -51,7 +51,7 @@
 {% if user.role == 'Teacher' %}
 
 <div class="col-3" id="left-side-teacher">
-    <a href="">Create Assessment</a>
+    <a href="{% url 'create-assessment' %}">Create Assessment</a>
     <a href="">View Assessment</a>
     <a href="">Edit Assessment</a>
     <a href="">Delete Assessment</a>
@@ -66,6 +66,10 @@
     <h3>Your assessments:</h3>
     {% for assessment in assessments %}
     <li>{{ assessment }}</li>
+    {% endfor %}
+    <h3>Your problems:</h3>
+    {% for problem in problems %}
+    <li>{{ problem }}</li>
     {% endfor %}
 </div>
 
