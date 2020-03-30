@@ -28,9 +28,16 @@ def create_assessment(request, assessment_problems=[]):
     if request.method == 'GET':
         current_assessment.delete()
 
-    if request.method == 'POST' and current_assessment.title == '':
+    if request.method == 'POST' and \
+            current_assessment.title == '' and \
+            'create-assessment' in request.POST:
         current_assessment.delete()
         messages.error(request, 'You have to give your assessment a title before generating it.')
+    elif request.method == 'POST' and \
+            assessment_problems == [] and \
+            'create-assessment' in request.POST:
+        current_assessment.delete()
+        messages.error(request, 'You have to create at list one problem in order to generate an assessment.')
 
     # submit create assessment
     # if request.method == 'POST' and 'create-assessment' in request.POST:
@@ -47,8 +54,27 @@ def create_assessment(request, assessment_problems=[]):
             )
             new_problem.save()
             assessment_problems.append(new_problem)
+
+    if request.method == 'POST' and \
+            'create-assessment' in request.POST and \
+            current_assessment.title != '' and \
+            assessment_problems != []:
+        create_assessment_form = CreateAssessmentForm(request.POST)
+        if create_assessment_form.is_valid():
+            print(current_assessment.creator)
+
+            for problem in assessment_problems:
+                problem.assessment = current_assessment
+            title = create_assessment_form.cleaned_data['title']
+            current_assessment = Assessment.objects.create(
+                creator=current_user,
+                title=title,
+            )
+            current_assessment.save()
+
     # context for home view
     user_assessments = Assessment.objects.filter(creator=User.objects.get(id=user_id))
+    print(user_assessments)
     context = {
         'create_assessment_form': create_assessment_form,
         'create_problem_form': create_problem_form,
