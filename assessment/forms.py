@@ -1,5 +1,6 @@
 from django.forms import ModelForm
 from .models import Assessment, Problem
+from django import forms
 
 
 class CreateAssessmentForm(ModelForm):
@@ -11,10 +12,13 @@ class CreateAssessmentForm(ModelForm):
 
 
 class CreateProblemForm(ModelForm):
+
     class Meta:
         model = Problem
         fields = [
-            'assessment',
             'description',
             'question'
         ]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 5})
+        }

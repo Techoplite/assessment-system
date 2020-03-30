@@ -63,14 +63,14 @@
 </div>
 
 <div class="col-3" id="right-side-teacher">
+    {% if user_assessment %}
     <h3>Your assessments:</h3>
-    {% for assessment in assessments %}
+    {% for assessment in user_assessments %}
     <li>{{ assessment }}</li>
     {% endfor %}
-    <h3>Your problems:</h3>
-    {% for problem in problems %}
-    <li>{{ problem }}</li>
-    {% endfor %}
+    {% else %}
+    <h3>You have no assessments.</h3>
+    {% endif %}
 </div>
 
 
