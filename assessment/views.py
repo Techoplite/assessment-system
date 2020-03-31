@@ -6,33 +6,25 @@ from accounts.models import User
 
 
 def create_assessment(request, assessment_problems=[]):
-    template_name = 'create_assessment.html'
 
-    # fetch the current user
+    # Fetch the current user.
     user_id = request.user.id
     current_user = User.objects.get(id=user_id)
     assessments = Assessment.objects.filter(creator__id=user_id).exclude(title='')
 
-    # initialize form
+    # Initialize form.
     create_problem_form = CreateProblemForm()
     create_assessment_form = CreateAssessmentForm()
 
-    # create an instance of Assessment
-    # without saving it (temporary)
+    # Create an instance of Assessment
+    # without saving it (temporary).
     current_assessment = Assessment.objects.create(
         creator=current_user
     )
     current_assessment.save()
     current_assessment.delete()
 
-    if request.method == 'POST' and \
-            current_assessment.title == '' and \
-            'create-assessment' in request.POST:
-        print('=================================================')
-        create_assessment_form = CreateAssessmentForm()
-        messages.error(request, 'You have to give your assessment a title before generating it.')
-
-    # submit create problem
+    # Successfully create problem.
     if request.method == 'POST' and 'create-problem' in request.POST:
         create_problem_form = CreateProblemForm(request.POST)
         if create_problem_form.is_valid():
@@ -45,6 +37,7 @@ def create_assessment(request, assessment_problems=[]):
             new_problem.save()
             assessment_problems.append(new_problem)
 
+    # Successfully create an assessment.
     if request.method == 'POST' and \
             'create-assessment' in request.POST and \
             assessment_problems != []:
@@ -60,9 +53,20 @@ def create_assessment(request, assessment_problems=[]):
                 )
                 current_assessment.save()
                 assessment_problems.clear()
+                messages.success(request, f'Assessment "{title}" created successfully.')
 
-    # context for home view
+    # When trying to generate an assessment with no title
+    # a message informs the user that a title must be provided.
+    if request.method == 'POST' and \
+            current_assessment.title == '' and \
+            'create-assessment' in request.POST:
+        create_assessment_form = CreateAssessmentForm()
+        messages.error(request, 'You have to give your assessment a title before generating it.')
+
     user_assessments = Assessment.objects.filter(creator=User.objects.get(id=user_id))
+
+    template_name = 'create_assessment.html'
+
     context = {
         'create_assessment_form': create_assessment_form,
         'create_problem_form': create_problem_form,
