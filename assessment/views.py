@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import CreateAssessmentForm, CreateProblemForm
 from .models import Assessment, Problem
 from accounts.models import User
@@ -12,7 +12,7 @@ def create_assessment(request, assessment_problems=[]):
     current_user = User.objects.get(id=user_id)
     assessments = Assessment.objects.filter(creator__id=user_id).exclude(title='')
 
-    # Initialize form.
+    # Initialize forms.
     create_problem_form = CreateProblemForm()
     create_assessment_form = CreateAssessmentForm()
 
@@ -75,3 +75,25 @@ def create_assessment(request, assessment_problems=[]):
         'assessments': assessments,
     }
     return render(request, template_name, context)
+
+
+def delete_assessment(request):
+    user_id = request.user.id
+
+    assessments = Assessment.objects.filter(creator__id=user_id).exclude(title='')
+
+    user_assessments = Assessment.objects.filter(creator=User.objects.get(id=user_id))
+
+    template_name = 'delete_assessment.html'
+
+    context = {
+        'user_assessments': user_assessments,
+        'assessments': assessments,
+    }
+
+    return render(request, template_name, context)
+
+
+def delete(request, assessment_id):
+    Assessment.objects.get(id=assessment_id).delete()
+    return redirect(delete_assessment)

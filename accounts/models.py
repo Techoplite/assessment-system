@@ -8,7 +8,7 @@ class UserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, password=None):
         """
         Creates and saves a User with the given email,
-        first name and last name.
+        first, last name and password.
         """
         if not email:
             raise ValueError('Users must have an email address')
@@ -25,8 +25,8 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, first_name, last_name, password=None):
         """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
+        Creates and saves a Superuser with the given email,
+        first, last name and password.
         """
         user = self.create_user(
             email,

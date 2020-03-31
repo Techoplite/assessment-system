@@ -1,0 +1,12 @@
+{% extends 'home.html' %}
+
+{% block title %}Delete Assessment{% endblock %}
+
+
+{% block main-content-teacher %}
+
+<h1>Delete Assessment</h1>
+{% for assessment in user_assessments %}
+<ul>{{ assessment }} <a href="{% url 'delete' assessment.id %}">X</a></ul>
+{% endfor %}
+{% endblock %}
