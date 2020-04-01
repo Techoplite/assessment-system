@@ -5,9 +5,16 @@ from accounts.models import User
 
 def home(request):
     template_name = 'home.html'
-    # Fetch the current user.
-    user_id = request.user.id
-    user_assessments = Assessment.objects.filter(creator=User.objects.get(id=user_id))
+
+    # Verify that the user is authenticated
+    # and fetches the related assessments.
+    if request.user.id is not None:
+        # Fetch the current user.
+        user_id = request.user.id
+        current_user = User.objects.get(id=user_id)
+        user_assessments = Assessment.objects.filter(creator=current_user).exclude(title='')
+    else:
+        user_assessments = None
     context = {
         'user_assessments': user_assessments,
     }

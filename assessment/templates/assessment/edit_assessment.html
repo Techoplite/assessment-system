@@ -1,0 +1,25 @@
+{% extends 'home.html' %}
+
+{% block title %}Edit Assessment{% endblock %}
+
+
+{% block main-content-teacher %}
+
+<h1>Edit Assessment</h1>
+{% for assessment in user_assessments %}
+<ul>{{ assessment }} <a href="{% url 'edit' assessment.id %}">/</a></ul>
+{% endfor %}
+<h1>Assessment: </h1><h2>{{ current_assessment }}</h2>
+{% if assessment_problems %}
+<h2>This assessment contains the following problems:</h2>
+{% for problem in assessment_problems %}
+<ul>{{ problem }}</ul>
+{% endfor %}
+{% endif %}
+<h1>Edit Problem</h1>
+<form action="{% url 'edit-assessment' %}">
+    {% csrf_token %}
+    {{ create_problem_form.as_p}}
+    <input type="submit" name="edit-problem" value="Edit">
+</form>
+{% endblock %}
