@@ -17,7 +17,7 @@ class Problem(models.Model):
     question = models.CharField(max_length=255, blank=False)
 
     def __str__(self):
-        return f'{self.question} in {self.assessment}'
+        return self.question
 
 
 class Answer(models.Model):

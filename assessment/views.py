@@ -159,3 +159,37 @@ def edit(request, assessment_id):
         'current_assessment': current_assessment,
     }
     return render(request, template_name, context)
+
+
+def edit_problem(request, problem_id):
+    # Fetch the problem to be edited.
+    problem_to_edit = Problem.objects.get(
+        id=problem_id
+    )
+
+    # Fetch the assessment to be edited
+    current_assessment = problem_to_edit.assessment
+    print('THIS IS THE ASSESSMENT TO BE EDITED: ' + str(current_assessment))
+
+    # Initialize forms.
+    edit_problem_form = CreateProblemForm()
+
+    # Successfully edit the problem.
+    if request.method == 'POST' and 'edit-problem' in request.POST:
+        print('==============THIS IS THE EDIT BUTTON==================')
+        edit_problem_form = CreateProblemForm(request.POST)
+        if edit_problem_form.is_valid():
+            description = edit_problem_form.cleaned_data['description']
+            question = edit_problem_form.cleaned_data['question']
+            problem_to_edit.description = description
+            problem_to_edit.question = question
+            problem_to_edit.save()
+
+    template_name = 'edit_assessment.html'
+
+    context = {
+        'edit_problem_form': edit_problem_form,
+        'problem_to_edit': problem_to_edit,
+        'current_assessment': current_assessment,
+    }
+    return render(request, template_name, context)

@@ -7,19 +7,21 @@
 
 <h1>Edit Assessment</h1>
 {% for assessment in user_assessments %}
-<ul>{{ assessment }} <a href="{% url 'edit' assessment.id %}">/</a></ul>
+<ul><a href="{% url 'edit' assessment.id %}">{{ assessment }} </a></ul>
 {% endfor %}
 <h1>Assessment: </h1><h2>{{ current_assessment }}</h2>
 {% if assessment_problems %}
 <h2>This assessment contains the following problems:</h2>
 {% for problem in assessment_problems %}
-<ul>{{ problem }}</ul>
+<ul><a href="{% url 'edit-problem' problem.id %}">{{ problem }}</a></ul>
 {% endfor %}
 {% endif %}
-<h1>Edit Problem</h1>
-<form action="{% url 'edit-assessment' %}">
+{% if problem_to_edit %}
+<h1>Edit Problem </h1><h3>{{ problem_to_edit }}</h3>
+<form action="{% url 'edit-problem' problem_to_edit.id %}" method="post">
     {% csrf_token %}
-    {{ create_problem_form.as_p}}
+    {{ edit_problem_form.as_p}}
     <input type="submit" name="edit-problem" value="Edit">
 </form>
+{% endif %}
 {% endblock %}
