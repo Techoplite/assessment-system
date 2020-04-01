@@ -162,6 +162,7 @@ def edit(request, assessment_id):
 
 
 def edit_problem(request, problem_id):
+
     # Fetch the problem to be edited.
     problem_to_edit = Problem.objects.get(
         id=problem_id
@@ -170,6 +171,12 @@ def edit_problem(request, problem_id):
     # Fetch the assessment to be edited
     current_assessment = problem_to_edit.assessment
     print('THIS IS THE ASSESSMENT TO BE EDITED: ' + str(current_assessment))
+
+    # Fetch user id
+    user_id = current_assessment.creator.id
+
+    # Fetch the current user's assessments.
+    user_assessments = Assessment.objects.filter(creator__id=user_id).exclude(title='')
 
     # Initialize forms.
     edit_problem_form = CreateProblemForm()
@@ -191,5 +198,6 @@ def edit_problem(request, problem_id):
         'edit_problem_form': edit_problem_form,
         'problem_to_edit': problem_to_edit,
         'current_assessment': current_assessment,
+        'user_assessments': user_assessments,
     }
     return render(request, template_name, context)

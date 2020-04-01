@@ -13,11 +13,11 @@
 {% if assessment_problems %}
 <h2>This assessment contains the following problems:</h2>
 {% for problem in assessment_problems %}
-<ul><a href="{% url 'edit-problem' problem.id %}">{{ problem }}</a></ul>
+<ul><a href="{% url 'edit-problem' problem.id %}">description: {{ problem.description }} <br>question:{{ problem }}</a></ul>
 {% endfor %}
 {% endif %}
 {% if problem_to_edit %}
-<h1>Edit Problem </h1><h3>{{ problem_to_edit }}</h3>
+<h1>Edit Problem </h1><h3>description: {{ problem_to_edit.description }} <br>question: {{ problem_to_edit }}</h3>
 <form action="{% url 'edit-problem' problem_to_edit.id %}" method="post">
     {% csrf_token %}
     {{ edit_problem_form.as_p}}
