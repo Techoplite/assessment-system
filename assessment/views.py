@@ -12,7 +12,6 @@ def create_assessment(request):
     user_id = request.user.id
     current_user = User.objects.get(id=user_id)
 
-
     # Initialize forms.
     create_problem_form = CreateProblemForm()
     create_assessment_form = CreateAssessmentForm()
@@ -27,13 +26,10 @@ def create_assessment(request):
             creator=current_user
         )
         temporary_assessment.save()
-    else:
-        temporary_assessment = temporary_assessment
 
+    # Fetch temporary assessment problems.
     assessment_problems = Problem.objects.filter(creator=current_user, assessment=temporary_assessment)
-
-    # Fetch temporary problems.
-    temporary_problems = Problem.objects.filter(creator=current_user, assessment=temporary_assessment)
+    print('THESE ARE THE ASSESSMENT PROBLEMS WITH GET: ' + str(assessment_problems))
 
     # Successfully create problem.
     if request.method == 'POST' and 'create-problem' in request.POST:
@@ -52,10 +48,10 @@ def create_assessment(request):
     # Successfully create an assessment.
     if request.method == 'POST' and \
             'create-assessment' in request.POST and \
-            assessment_problems != []:
+            assessment_problems is not None:
         create_assessment_form = CreateAssessmentForm(request.POST)
         if create_assessment_form.is_valid():
-            for problem in temporary_problems:
+            for problem in assessment_problems:
                 problem.assessment = temporary_assessment
                 problem.save()
             title = create_assessment_form.cleaned_data['title']
@@ -66,12 +62,11 @@ def create_assessment(request):
                 )
                 # Fetch temporary problems and assign them
                 # to the temporary assessment.
-                temporary_problems = Problem.objects.filter(creator=current_user, assessment=new_assessment)
-                for problem in temporary_problems:
+                for problem in assessment_problems:
                     problem.assessment = new_assessment
                     problem.save()
                 assessment_problems = Problem.objects.filter(assessment=new_assessment)
-                print(assessment_problems)
+                print('THESE ARE THE PROBLEMS WITH SUCCEFFFULL: ' + str(assessment_problems))
                 new_assessment.save()
                 Problem.objects.filter(assessment=temporary_assessment).delete()
                 messages.success(request, f'Assessment "{title}" created successfully.')
@@ -134,7 +129,7 @@ def edit_assessment(request):
     return render(request, template_name, context)
 
 
-def edit(request, assessment_id, assessment_problems=[]):
+def edit(request, assessment_id):
     # Fetch the assessment to be edited
     current_assessment = Assessment.objects.get(
         id=assessment_id
@@ -143,55 +138,16 @@ def edit(request, assessment_id, assessment_problems=[]):
     # Fetch the current user.
     user_id = request.user.id
     current_user = User.objects.get(id=user_id)
-    assessments = Assessment.objects.filter(creator__id=user_id).exclude(title='')
 
-    # Fetch current user problems
+    # Fetch the current user's assessments.
+    user_assessments = Assessment.objects.filter(creator__id=user_id).exclude(title='')
+
+    # Fetch current user's problems.
     assessment_problems = Problem.objects.filter(creator=current_user, assessment=current_assessment)
 
     # Initialize forms.
     create_problem_form = CreateProblemForm()
     create_assessment_form = CreateAssessmentForm()
-
-    # Successfully create problem.
-    if request.method == 'POST' and 'create-problem' in request.POST:
-        create_problem_form = CreateProblemForm(request.POST)
-        if create_problem_form.is_valid():
-            description = create_problem_form.cleaned_data['description']
-            question = create_problem_form.cleaned_data['question']
-            new_problem = Problem.objects.create(
-                description=description,
-                question=question,
-            )
-            new_problem.save()
-            assessment_problems.append(new_problem)
-
-    # Successfully create an assessment.
-    if request.method == 'POST' and \
-            'create-assessment' in request.POST and \
-            assessment_problems != []:
-        create_assessment_form = CreateAssessmentForm(request.POST)
-        if create_assessment_form.is_valid():
-            for problem in assessment_problems:
-                problem.assessment = current_assessment
-            title = create_assessment_form.cleaned_data['title']
-            if title != '':
-                current_assessment = Assessment.objects.create(
-                    creator=current_user,
-                    title=title,
-                )
-                current_assessment.save()
-                assessment_problems.clear()
-                messages.success(request, f'Assessment "{title}" created successfully.')
-
-    # When trying to generate an assessment with no title
-    # a message informs the user that a title must be provided.
-    if request.method == 'POST' and \
-            current_assessment.title == '' and \
-            'create-assessment' in request.POST:
-        create_assessment_form = CreateAssessmentForm()
-        messages.error(request, 'You have to give your assessment a title before generating it.')
-
-    current_assessment.save()
 
     template_name = 'edit_assessment.html'
 
@@ -199,7 +155,7 @@ def edit(request, assessment_id, assessment_problems=[]):
         'create_assessment_form': create_assessment_form,
         'create_problem_form': create_problem_form,
         'assessment_problems': assessment_problems,
-        'assessments': assessments,
+        'user_assessments': user_assessments,
         'current_assessment': current_assessment,
     }
     return render(request, template_name, context)
