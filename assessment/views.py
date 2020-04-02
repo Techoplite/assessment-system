@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from .forms import CreateAssessmentForm, CreateProblemForm, CreateAnswerForm
 from .models import Assessment, Problem, Answer
 from accounts.models import User
-
 from core.views import home
 
 
@@ -33,17 +32,64 @@ def create_assessment(request):
     # Fetch temporary assessment problems.
     assessment_problems = Problem.objects.filter(creator=current_user, assessment=temporary_assessment)
 
-    # Fetch the problem to be answered.
-    if assessment_problems:
-        problem_to_be_answered = assessment_problems.last()
-    else:
+    # Check if a problem is finished.
+    problem_to_be_answered = assessment_problems.last()
+    problem_finished = None
+    problem_answers = None
+
+    is_problem_finished = Answer.objects.filter(problem_finished=True)
+
+    print('THIS IS THE OUTER ANSWERS: ' + str(Answer.objects.all()))
+
+    if is_problem_finished:
+        problem_finished = Answer.objects.get(problem_finished=True).question
+        print(f'THIS PROBLEM IS FINISHED {problem_finished} with last answer {Answer.objects.get(problem_finished=True)}')
+        last_answer = Answer.objects.get(problem_finished=True)
+        last_answer.problem_finished = False
+        last_answer.save()
+    if assessment_problems and problem_finished:
         problem_to_be_answered = None
-        problem_answers = None
+    elif assessment_problems and not problem_finished:
+        problem_to_be_answered = assessment_problems.last()
 
     # Fetch the answers related to the current problem.
     for problem in assessment_problems:
         problem_answers = Answer.objects.filter(creator=current_user, question=problem)
-        print(f'{problem}, {problem_answers}')
+
+    # Successfully create answer.
+    if request.method == 'POST' and 'create-answer' in request.POST:
+        create_answer_form = CreateAnswerForm(request.POST)
+        if create_answer_form.is_valid():
+            answer = create_answer_form.cleaned_data['answer']
+            new_answer = Answer.objects.create(
+                creator=current_user,
+                question=problem_to_be_answered,
+                answer=answer
+            )
+            new_answer.save()
+            return redirect(create_assessment)
+
+    # All answers to a problem
+    # have been created. Finish the problem.
+    if request.method == 'POST' and 'problem-finished' in request.POST:
+        create_answer_form = CreateAnswerForm(request.POST)
+        if create_answer_form.is_valid():
+            print('THE CODE REACHED THIS POINT')
+            answer = create_answer_form.cleaned_data['answer']
+            new_answer = Answer.objects.create(
+                creator=current_user,
+                question=problem_to_be_answered,
+                answer=answer,
+                problem_finished=True
+            )
+            new_answer.save()
+            print(f'THIS IS LAST ANSWER FOR PROBLEM {new_answer.question} {new_answer}')
+            print('THESE ALE ALL THE ANSWERS : ' + str(Answer.objects.all()))
+            return redirect(create_assessment)
+
+    # Reset assessment.
+    if request.method == 'POST' and 'reset-assessment' in request.POST:
+        Problem.objects.filter(assessment=temporary_assessment).delete()
 
     # Successfully create problem.
     if request.method == 'POST' and 'create-problem' in request.POST:
@@ -58,19 +104,9 @@ def create_assessment(request):
                 question=question,
             )
             new_problem.save()
+        return redirect(create_assessment)
 
-    # Successfully create answer.
-    if request.method == 'POST' and 'create-answer' in request.POST:
-        create_answer_form = CreateAnswerForm(request.POST)
-        if create_answer_form.is_valid():
-            answer = create_answer_form.cleaned_data['answer']
-            new_answer = Answer.objects.create(
-                creator=current_user,
-                question=problem_to_be_answered,
-                answer=answer
-            )
-            new_answer.save()
-            return redirect(create_assessment)
+
 
     # Successfully create an assessment.
     if request.method == 'POST' and \
@@ -120,6 +156,7 @@ def create_assessment(request):
         'assessment_problems': assessment_problems,
         'user_assessments': user_assessments,
         'problem_answers': problem_answers,
+        'problem_to_be_answered': problem_to_be_answered,
     }
     return render(request, template_name, context)
 
@@ -130,7 +167,7 @@ def delete_assessment(request):
     unassigned_problems = Problem.objects.filter(assessment=temporary_assessment)
     unassigned_problems.delete()
 
-    # Fetch user id
+    # Fetch user id.
     user_id = request.user.id
 
     user_assessments = Assessment.objects.filter(creator__id=user_id).exclude(title='')
@@ -152,12 +189,12 @@ def delete(request, assessment_id):
 
 
 def edit_assessment(request):
-
     # Cancel all unassigned problems.
     temporary_assessment = Assessment.objects.get(title='')
     unassigned_problems = Problem.objects.filter(assessment=temporary_assessment)
     unassigned_problems.delete()
 
+    # Fetch user id.
     user_id = request.user.id
 
     user_assessments = Assessment.objects.filter(creator__id=user_id).exclude(title='')

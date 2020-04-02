@@ -24,6 +24,7 @@ class Answer(models.Model):
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False)
     answer = models.CharField(max_length=255)
     question = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    problem_finished = models.BooleanField(default=False)
 
     def __str__(self):
         return self.answer
