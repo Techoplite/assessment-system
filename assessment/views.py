@@ -18,14 +18,15 @@ def create_assessment(request):
 
     # Create a temporary Assessment
     # if one does not exists yet.
-    temporary_assessment = Assessment.objects.get(title='')
+    first_access_temporary_assessment = Assessment.objects.filter(title='')
 
-    if not temporary_assessment:
-        temporary_assessment.delete()
+    if not first_access_temporary_assessment:
         temporary_assessment = Assessment.objects.create(
             creator=current_user
         )
         temporary_assessment.save()
+
+    temporary_assessment = Assessment.objects.get(title='')
 
     # Fetch temporary assessment problems.
     assessment_problems = Problem.objects.filter(creator=current_user, assessment=temporary_assessment)
