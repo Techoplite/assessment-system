@@ -4,12 +4,13 @@
 
 
 {% block main-content-teacher %}
-{% if assessment_problems %}
+
 <h2>This assessment contains the following problems:</h2>
-{% for problem in assessment_problems %}
-<ul>{{ problem }}</ul>
-<ul>{{ problem_answers }}</ul>
+{% for problem, answers in problems_and_answers.items %}
+<li>{{ problem }}</li>
+<ul>{{ answers }}</ul>
 {% endfor %}
+
 {% if not problem_to_be_answered %}
 <h1>Create Problem</h1>
 <form action="{% url 'create-assessment' %}" method="post">
@@ -26,6 +27,7 @@
     <input type="submit" value="Finish Problem" name="problem-finished">
 </form>
 {% endif %}
+
 <h3>One last step: give this assessment a title and generate it.</h3>
 <form action="{% url 'create-assessment' %}" method="post">
     {% csrf_token %}
@@ -33,13 +35,5 @@
     <input type="submit" value="Generate" name="create-assessment">
     <input type="submit" value="Reset" name="reset-assessment">
 </form>
-{% else %}
-<h1>Create Problem</h1>
-<form action="{% url 'create-assessment' %}" method="post">
-    {% csrf_token %}
-    {{ create_problem_form.as_p }}
-    <input type="submit" value="Create" name="create-problem">
-</form>
-{% endif %}
 {% endblock %}
 

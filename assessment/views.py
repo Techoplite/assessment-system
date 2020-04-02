@@ -39,11 +39,8 @@ def create_assessment(request):
 
     is_problem_finished = Answer.objects.filter(problem_finished=True)
 
-    print('THIS IS THE OUTER ANSWERS: ' + str(Answer.objects.all()))
-
     if is_problem_finished:
         problem_finished = Answer.objects.get(problem_finished=True).question
-        print(f'THIS PROBLEM IS FINISHED {problem_finished} with last answer {Answer.objects.get(problem_finished=True)}')
         last_answer = Answer.objects.get(problem_finished=True)
         last_answer.problem_finished = False
         last_answer.save()
@@ -53,8 +50,11 @@ def create_assessment(request):
         problem_to_be_answered = assessment_problems.last()
 
     # Fetch the answers related to the current problem.
+    problems_and_answers = {}
     for problem in assessment_problems:
         problem_answers = Answer.objects.filter(creator=current_user, question=problem)
+        problems_and_answers.update({problem: problem_answers})
+    print(problems_and_answers)
 
     # Successfully create answer.
     if request.method == 'POST' and 'create-answer' in request.POST:
@@ -74,7 +74,6 @@ def create_assessment(request):
     if request.method == 'POST' and 'problem-finished' in request.POST:
         create_answer_form = CreateAnswerForm(request.POST)
         if create_answer_form.is_valid():
-            print('THE CODE REACHED THIS POINT')
             answer = create_answer_form.cleaned_data['answer']
             new_answer = Answer.objects.create(
                 creator=current_user,
@@ -83,8 +82,6 @@ def create_assessment(request):
                 problem_finished=True
             )
             new_answer.save()
-            print(f'THIS IS LAST ANSWER FOR PROBLEM {new_answer.question} {new_answer}')
-            print('THESE ALE ALL THE ANSWERS : ' + str(Answer.objects.all()))
             return redirect(create_assessment)
 
     # Reset assessment.
@@ -105,8 +102,6 @@ def create_assessment(request):
             )
             new_problem.save()
         return redirect(create_assessment)
-
-
 
     # Successfully create an assessment.
     if request.method == 'POST' and \
@@ -157,6 +152,7 @@ def create_assessment(request):
         'user_assessments': user_assessments,
         'problem_answers': problem_answers,
         'problem_to_be_answered': problem_to_be_answered,
+        'problems_and_answers': problems_and_answers,
     }
     return render(request, template_name, context)
 
