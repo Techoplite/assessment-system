@@ -5,6 +5,7 @@
 
 {% block main-content-teacher %}
 
+<!--Problems in assessment.-->
 <h2>This assessment contains the following problems:</h2>
 {% for problem, answers in problems_and_answers.items %}
 <li>{{ problem }}</li>
@@ -13,6 +14,7 @@
 {% endfor %}
 {% endfor %}
 
+<!--Create problem.-->
 {% if not problem_to_be_answered %}
 <h1>Create Problem</h1>
 <form action="{% url 'create-assessment' %}" method="post">
@@ -30,6 +32,7 @@
 </form>
 {% endif %}
 
+<!--Generate assessment.-->
 <h3>One last step: give this assessment a title and generate it.</h3>
 <form action="{% url 'create-assessment' %}" method="post">
     {% csrf_token %}
