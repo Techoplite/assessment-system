@@ -15,6 +15,12 @@
     {{ create_problem_form.as_p }}
     <input type="submit" value="Create" name="create-problem">
 </form>
+<h1>Create Answer to {{ problem_to_be_answered }}</h1>
+<form action="{% url 'create-assessment' %}" method="post">
+    {% csrf_token %}
+    {{ create_answer_form.as_p }}
+    <input type="submit" value="Create" name="create-answer">
+</form>
 <h3>One last step: give this assessment a title and generate it.</h3>
 <form action="{% url 'create-assessment' %}" method="post">
     {% csrf_token %}

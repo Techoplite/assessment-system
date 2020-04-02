@@ -51,9 +51,9 @@
 {% if user.role == 'Teacher' %}
 
 <div class="col-3" id="left-side-teacher">
-    <a href="{% url 'create-assessment' %}" name="create-assessment-view">Create Assessment</a>
-    <a href="{% url 'delete-assessment' %}" name="delete-assessment-view">Delete Assessment</a>
-    <a href="{% url 'edit-assessment' %}" name="edit-assessment-view">Edit Assessment</a>
+    <a href="{% url 'create-assessment' %}" name="create-assessment">Create Assessment</a>
+    <a href="{% url 'delete-assessment' %}" name="delete-assessment">Delete Assessment</a>
+    <a href="{% url 'edit-assessment' %}" name="edit-assessment">Edit Assessment</a>
 </div>
 
 <div class="col-6" id="main-content-teacher">
