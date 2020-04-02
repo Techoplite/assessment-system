@@ -52,9 +52,11 @@ def create_assessment(request):
     # Fetch the answers related to the current problem.
     problems_and_answers = {}
     for problem in assessment_problems:
-        problem_answers = Answer.objects.filter(creator=current_user, question=problem)
-        problems_and_answers.update({problem: problem_answers})
-    print(problems_and_answers)
+        problem_answers_list = []
+        problem_answers_queryset = Answer.objects.filter(creator=current_user, question=problem)
+        for problem_answer_object in problem_answers_queryset:
+            problem_answers_list.append(problem_answer_object.answer)
+        problems_and_answers.update({problem: problem_answers_list})
 
     # Successfully create answer.
     if request.method == 'POST' and 'create-answer' in request.POST:

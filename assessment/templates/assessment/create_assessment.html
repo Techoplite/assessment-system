@@ -8,7 +8,9 @@
 <h2>This assessment contains the following problems:</h2>
 {% for problem, answers in problems_and_answers.items %}
 <li>{{ problem }}</li>
-<ul>{{ answers }}</ul>
+{% for answer in answers %}
+<ul>{{ answer }}</ul>
+{% endfor %}
 {% endfor %}
 
 {% if not problem_to_be_answered %}
