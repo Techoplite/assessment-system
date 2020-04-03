@@ -5,23 +5,64 @@
 
 {% block main-content-teacher %}
 
+<!--List of the assessments.-->
 <h1>Edit Assessment</h1>
 {% for assessment in user_assessments %}
 <ul><a href="{% url 'edit' assessment.id %}">{{ assessment }} </a></ul>
 {% endfor %}
-<h1>Assessment: </h1><h2>{{ current_assessment }}</h2>
+
+<!--Assessment currently edited.-->
+{% if current_assessment %}
+<h3>Assessment: </h3>{{ current_assessment }}
+{% endif %}
+
+<!--This assessment problems.-->
 {% if assessment_problems %}
 <h2>This assessment contains the following problems:</h2>
 {% for problem in assessment_problems %}
-<ul><a href="{% url 'edit-problem' problem.id %}">description: {{ problem.description }} <br>question:{{ problem }}</a></ul>
+<ul>
+    <a href="{% url 'edit-problem' problem.id %}">
+        PROBLEM
+        <br>Description:
+        <br>{{ problem.description }}
+        <br>Question:
+        <br>{{ problem }}
+        <br>
+        <br>
+    </a>
+</ul>
 {% endfor %}
 {% endif %}
+
+<!--This assessment available answers.-->
+{% if problem_answers_queryset %}
+<h3>Answers available for this problem:</h3>
+{% for answer in problem_answers_queryset %}
+<ul><a href="{% url 'edit-answer' answer.id %}">{{ answer.answer }}</a></ul>
+{% endfor %}
+{% endif %}
+
+<!--Problem being edited.-->
 {% if problem_to_edit %}
-<h1>Edit Problem </h1><h3>description: {{ problem_to_edit.description }} <br>question: {{ problem_to_edit }}</h3>
+<h1>Edit Problem </h1>
+<h3>description: </h3>{{ problem_to_edit.description }}
+<h3>question: </h3>{{ problem_to_edit }}
 <form action="{% url 'edit-problem' problem_to_edit.id %}" method="post">
     {% csrf_token %}
     {{ edit_problem_form.as_p}}
     <input type="submit" name="edit-problem" value="Edit">
 </form>
 {% endif %}
+
+<!--Answer being edited.-->
+{% if edit_answer_form %}
+<h1>Edit Answer to problem: </h1>{{ answer_problem }}
+<h3>answer: </h3>{{ answer_to_edit.description }}
+<form action="{% url 'edit-answer' answer_to_edit.id %}" method="post">
+    {% csrf_token %}
+    {{ edit_answer_form.as_p}}
+    <input type="submit" name="edit-answer" value="Edit">
+</form>
+{% endif %}
+
 {% endblock %}

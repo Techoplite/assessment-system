@@ -253,9 +253,20 @@ def edit_problem(request, problem_id):
     # Fetch the current user's assessments.
     user_assessments = Assessment.objects.filter(creator__id=user_id).exclude(title='')
 
-    # Initialize forms.
-    edit_problem_form = CreateProblemForm()
+    # Fetch the answers related to this problem.
+    problem_answers_list = []
+    problem_answers_queryset = Answer.objects.filter(question=problem_to_edit)
 
+    # Initialize form.
+    description_to_be_edited = problem_to_edit.description
+    question_to_be_edited = problem_to_edit.question
+    edit_problem_form = CreateProblemForm(
+        initial=
+        {
+            'description': description_to_be_edited,
+            'question': question_to_be_edited
+        }
+    )
     # Successfully edit the problem.
     if request.method == 'POST' and 'edit-problem' in request.POST:
         edit_problem_form = CreateProblemForm(request.POST)
@@ -265,6 +276,8 @@ def edit_problem(request, problem_id):
             problem_to_edit.description = description
             problem_to_edit.question = question
             problem_to_edit.save()
+            messages.success(request, f'Question "{question}" edited successfully.')
+            return redirect(edit, assessment_id=current_assessment.id)
 
     template_name = 'edit_assessment.html'
 
@@ -273,5 +286,49 @@ def edit_problem(request, problem_id):
         'problem_to_edit': problem_to_edit,
         'current_assessment': current_assessment,
         'user_assessments': user_assessments,
+        'problem_answers_queryset': problem_answers_queryset,
+    }
+    return render(request, template_name, context)
+
+
+def edit_answer(request, answer_id):
+    # Fetch the answer to be edited.
+    answer_to_edit = Answer.objects.get(id=answer_id)
+    previous_answer = answer_to_edit.answer
+
+    # Fetch the current problem ID
+    # to be passed to the redirect.
+    answer_problem = answer_to_edit.question
+    problem_id = answer_problem.id
+
+    # Fetch the assessment to be edited
+    current_assessment = answer_problem.assessment
+
+    # Initialize form.
+    edit_answer_form = CreateAnswerForm(
+        initial={
+            'answer': answer_to_edit.answer
+        }
+    )
+
+    # Successfully edit the answer.
+    if request.method == 'POST' and 'edit-answer' in request.POST:
+        edit_answer_form = CreateAnswerForm(request.POST)
+        if edit_answer_form.is_valid():
+            print('CODE IS REACHING THIS POINT')
+
+            answer = edit_answer_form.cleaned_data['answer']
+            answer_to_edit.answer = answer
+            answer_to_edit.save()
+            messages.success(request, f'Answer successfully changed form "{previous_answer}" to "{answer}".')
+            return redirect(edit_problem, problem_id=problem_id)
+
+    template_name = 'edit_assessment.html'
+
+    context = {
+        'edit_answer_form': edit_answer_form,
+        'answer_to_edit': answer_to_edit,
+        'current_assessment': current_assessment,
+        'answer_problem': answer_problem,
     }
     return render(request, template_name, context)
