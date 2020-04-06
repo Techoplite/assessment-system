@@ -332,3 +332,51 @@ def edit_answer(request, answer_id):
         'answer_problem': answer_problem,
     }
     return render(request, template_name, context)
+
+
+def delete_answer(request, answer_id):
+    # Fetch the answer to delete.
+    answer_to_delete = Answer.objects.get(id=answer_id)
+
+    # Delete the answer.
+    answer_to_delete.delete()
+
+    # Fetch the problem ID
+    # to pass to the redirect function.
+    problem_id = answer_to_delete.question.id
+
+    return redirect(edit_problem, problem_id=problem_id)
+
+
+def add_answer(request, problem_id):
+    # Fetch the problem being edited.
+    problem_to_edit = Problem.objects.get(id=problem_id)
+
+    # Fetch the current user.
+    current_user = problem_to_edit.creator
+
+    # Initialize form.
+    create_answer_form = CreateAnswerForm()
+
+    if request.method == 'POST' and 'create-answer' in request.POST:
+        create_answer_form = CreateAnswerForm(request.POST)
+        if create_answer_form.is_valid():
+            answer = create_answer_form.cleaned_data['answer']
+            new_answer = Answer.objects.create(
+                creator=current_user,
+                question=problem_to_edit,
+                answer=answer,
+                problem_finished=True
+            )
+            new_answer.save()
+            messages.success(request, f'Answer "{new_answer}" successfully added to problem "{problem_to_edit}".')
+            return redirect(edit_problem, problem_id=problem_id)
+
+    template_name = 'edit_assessment.html'
+
+    context = {
+        'create_answer_form': create_answer_form,
+        'problem_to_edit': problem_to_edit,
+        'problem_id': problem_id,
+    }
+    return render(request, template_name, context)
