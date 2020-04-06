@@ -17,7 +17,8 @@ No assessment to edit.
 
 <!--Assessment currently edited.-->
 {% if current_assessment %}
-<h3>Assessment: </h3>{{ current_assessment }}
+<h3>Assessment being edited: </h3>
+<ul>{{ current_assessment }}</ul>
 {% endif %}
 
 <!--This assessment problems.-->
@@ -61,7 +62,7 @@ No assessment to edit.
 <!--Add answer to existing problem.-->
 <a href="{% url 'add-answer' problem_to_edit.id %}">Add new answer</a>
 {% if create_answer_form %}
-<h1>Create Answer to {{ problem_to_edit }}</h1>
+<h1>Create an answer to "{{ problem_to_edit }}"</h1>
 <form action="{% url 'add-answer' problem_to_edit.id %}" method="post">
     {% csrf_token %}
     {{ create_answer_form.as_p }}
@@ -73,12 +74,16 @@ No assessment to edit.
 <!--Problem being edited.-->
 {% if problem_to_edit and not create_answer_form %}
 <h1>Edit Problem </h1>
-<h3>description: </h3>{{ problem_to_edit.description }}
-<h3>question: </h3>{{ problem_to_edit }}
+<h3>Description: </h3>{{ problem_to_edit.description }}
+<h3>Question: </h3>{{ problem_to_edit }}
 <form action="{% url 'edit-problem' problem_to_edit.id %}" method="post">
     {% csrf_token %}
     {{ edit_problem_form.as_p}}
-    <input type="submit" name="edit-problem" value="Edit">
+    {% if problem_answers_queryset %}
+    <input type="submit" name="edit-problem" value="Finish">
+    {% else %}
+    An asessment must contain at list one answer to be subbitted.
+    {% endif %}
 </form>
 {% endif %}
 

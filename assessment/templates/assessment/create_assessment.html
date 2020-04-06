@@ -23,7 +23,7 @@
     <input type="submit" value="Create" name="create-problem">
 </form>
 {% else %}
-<h1>Create Answer to {{ problem_to_be_answered }}</h1>
+<h1>Create an answer to "{{ problem_to_be_answered }}"</h1>
 <form action="{% url 'create-assessment' %}" method="post">
     {% csrf_token %}
     {{ create_answer_form.as_p }}

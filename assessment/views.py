@@ -142,6 +142,7 @@ def create_assessment(request):
     # Fetch temporary assessment problems.
     assessment_problems = Problem.objects.filter(creator=current_user, assessment=temporary_assessment)
 
+    # Fetch the user assessment
     user_assessments = Assessment.objects.filter(creator=current_user).exclude(title='')
 
     template_name = 'create_assessment.html'
@@ -358,6 +359,9 @@ def add_answer(request, problem_id):
     # Initialize form.
     create_answer_form = CreateAnswerForm()
 
+    # Fetch the user assessment
+    user_assessments = Assessment.objects.filter(creator=current_user).exclude(title='')
+
     if request.method == 'POST' and 'create-answer' in request.POST:
         create_answer_form = CreateAnswerForm(request.POST)
         if create_answer_form.is_valid():
@@ -378,6 +382,7 @@ def add_answer(request, problem_id):
         'create_answer_form': create_answer_form,
         'problem_to_edit': problem_to_edit,
         'problem_id': problem_id,
+        'user_assessments': user_assessments,
     }
     return render(request, template_name, context)
 
@@ -400,14 +405,39 @@ def delete_problem(request, problem_id):
 def add_problem(request, assessment_id):
     # Fetch the assessment being edited.
     assessment_to_edit = Assessment.objects.get(id=assessment_id)
-    print(assessment_to_edit)
 
     # Fetch the current user.
     current_user = assessment_to_edit.creator
 
+    # Fetch problems related to the assessment to be edited.
+    assessment_problems = Problem.objects.filter(creator=current_user, assessment=assessment_to_edit)
+
     # Initialize form.
     create_problem_form = CreateProblemForm()
+    create_answer_form = CreateAnswerForm()
 
+    # Fetch temporary assessment problems.
+    assessment_problems = Problem.objects.filter(creator=current_user, assessment=assessment_to_edit)
+
+    # Check if a problem is finished.
+    problem_edited_to_be_answered = assessment_problems.last()
+    print(problem_edited_to_be_answered)
+    problem_finished = None
+    problem_answers = None
+
+    is_problem_finished = Answer.objects.filter(problem_finished=True)
+
+    if is_problem_finished:
+        problem_finished = Answer.objects.get(problem_finished=True).question
+        last_answer = Answer.objects.get(problem_finished=True)
+        last_answer.problem_finished = False
+        last_answer.save()
+    if assessment_problems and problem_finished:
+        problem_to_be_answered = None
+    elif assessment_problems and not problem_finished:
+        problem_to_be_answered = assessment_problems.last()
+
+    # Successfully add problem.
     if request.method == 'POST' and 'create-problem' in request.POST:
         create_problem_form = CreateProblemForm(request.POST)
         if create_problem_form.is_valid():
@@ -421,21 +451,57 @@ def add_problem(request, assessment_id):
             )
             new_problem.save()
             messages.success(request, f'Problem "{new_problem}" successfully added to problem "{assessment_to_edit}".')
-            return redirect(edit, assessment_id=assessment_to_edit.id)
+            return redirect(add_problem, assessment_id=assessment_to_edit.id)
+
+    # Fetch the answers related to the current problem.
+    problems_and_answers = {}
+    for problem in assessment_problems:
+        problem_answers_list = []
+        problem_answers_queryset = Answer.objects.filter(creator=current_user, question=problem)
+        for problem_answer_object in problem_answers_queryset:
+            problem_answers_list.append(problem_answer_object.answer)
+        problems_and_answers.update({problem: problem_answers_list})
+
+    # Successfully create answer.
+    if request.method == 'POST' and 'create-answer' in request.POST:
+        create_answer_form = CreateAnswerForm(request.POST)
+        if create_answer_form.is_valid():
+            answer = create_answer_form.cleaned_data['answer']
+            new_answer = Answer.objects.create(
+                creator=current_user,
+                question=problem_to_be_answered,
+                answer=answer
+            )
+            new_answer.save()
+            return redirect(add_problem, assessment_id=assessment_to_edit.id)
+
+    # All answers to a problem
+    # have been created. Finish the problem.
+    if request.method == 'POST' and 'problem-finished' in request.POST:
+        create_answer_form = CreateAnswerForm(request.POST)
+        if create_answer_form.is_valid():
+            answer = create_answer_form.cleaned_data['answer']
+            new_answer = Answer.objects.create(
+                creator=current_user,
+                question=problem_to_be_answered,
+                answer=answer,
+                problem_finished=True
+            )
+            new_answer.save()
+            return redirect(add_problem, assessment_id=assessment_to_edit.id)
 
     # Fetch the user assessments.
     user_assessments = Assessment.objects.filter(creator__id=current_user.id).exclude(title='')
-
-    # Fetch temporary assessment problems.
-    assessment_problems = Problem.objects.filter(creator=current_user, assessment=assessment_to_edit)
 
     template_name = 'edit_assessment.html'
 
     context = {
         'create_problem_form': create_problem_form,
+        'create_answer_form': create_answer_form,
         'assessment_to_edit': assessment_to_edit,
         'problem_id': assessment_id,
         'user_assessments': user_assessments,
         'assessment_problems': assessment_problems,
+        'problem_edited_to_be_answered': problem_edited_to_be_answered,
     }
     return render(request, template_name, context)
