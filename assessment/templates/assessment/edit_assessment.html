@@ -25,7 +25,7 @@ No assessment to edit.
 {% if assessment_problems %}
 <h2>This assessment contains the following problems:</h2>
 {% for problem in assessment_problems %}
-<ul>
+<li>
     <a href="{% url 'edit-problem' problem.id %}">
         PROBLEM
         <br>Description:
@@ -33,7 +33,11 @@ No assessment to edit.
         <br>Question:
         <ul>{{ problem }}</ul>
         <a href="{% url 'delete-problem' problem.id %}">Delete</a>
-</ul>
+        <br>{% if problem_with_no_answer == problem %}
+        ATTENTION: this problem is missing an available answer.
+        Please create one.
+        {% endif %}
+</li>
 {% endfor %}
 {% endif %}
 

@@ -227,6 +227,15 @@ def edit(request, assessment_id):
     create_problem_form = CreateProblemForm()
     create_assessment_form = CreateAssessmentForm()
 
+    # Fetch any problem with no answer
+    # and inform the user.
+    problem_with_no_answer = None
+    for question in Problem.objects.filter(creator=request.user):
+        print(f'THIS ARE ALL USER PROBLEMS: {question}')
+        if len(Answer.objects.filter(creator=request.user, question=question)) == 0:
+            problem_with_no_answer = question
+            print(f'THIS IS A PROBLEM WITH NO ANSWER: {problem_with_no_answer}')
+
     template_name = 'edit_assessment.html'
 
     context = {
@@ -235,6 +244,7 @@ def edit(request, assessment_id):
         'assessment_problems': assessment_problems,
         'user_assessments': user_assessments,
         'current_assessment': current_assessment,
+        'problem_with_no_answer': problem_with_no_answer,
     }
     return render(request, template_name, context)
 
