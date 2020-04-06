@@ -5,8 +5,13 @@
 
 {% block main-content-teacher %}
 
+{% if user_assessments %}
 <h1>Delete Assessment</h1>
 {% for assessment in user_assessments %}
 <ul>{{ assessment }} <a href="{% url 'delete' assessment.id %}">X</a></ul>
 {% endfor %}
+{% else %}
+No assessment to delete.
+{% endif %}
+
 {% endblock %}

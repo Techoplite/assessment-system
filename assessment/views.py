@@ -380,3 +380,62 @@ def add_answer(request, problem_id):
         'problem_id': problem_id,
     }
     return render(request, template_name, context)
+
+
+def delete_problem(request, problem_id):
+    # Fetch the problem to delete.
+    problem_to_delete = Problem.objects.get(id=problem_id)
+
+    # Delete the problem.
+    problem_to_delete.delete()
+
+    # Fetch the assessment ID
+    # to pass to the redirect function.
+    assessment_id = problem_to_delete.assessment.id
+    print(assessment_id)
+
+    return redirect(edit, assessment_id=assessment_id)
+
+
+def add_problem(request, assessment_id):
+    # Fetch the assessment being edited.
+    assessment_to_edit = Assessment.objects.get(id=assessment_id)
+    print(assessment_to_edit)
+
+    # Fetch the current user.
+    current_user = assessment_to_edit.creator
+
+    # Initialize form.
+    create_problem_form = CreateProblemForm()
+
+    if request.method == 'POST' and 'create-problem' in request.POST:
+        create_problem_form = CreateProblemForm(request.POST)
+        if create_problem_form.is_valid():
+            description = create_problem_form.cleaned_data['description']
+            question = create_problem_form.cleaned_data['question']
+            new_problem = Problem.objects.create(
+                creator=current_user,
+                assessment=assessment_to_edit,
+                description=description,
+                question=question,
+            )
+            new_problem.save()
+            messages.success(request, f'Problem "{new_problem}" successfully added to problem "{assessment_to_edit}".')
+            return redirect(edit, assessment_id=assessment_to_edit.id)
+
+    # Fetch the user assessments.
+    user_assessments = Assessment.objects.filter(creator__id=current_user.id).exclude(title='')
+
+    # Fetch temporary assessment problems.
+    assessment_problems = Problem.objects.filter(creator=current_user, assessment=assessment_to_edit)
+
+    template_name = 'edit_assessment.html'
+
+    context = {
+        'create_problem_form': create_problem_form,
+        'assessment_to_edit': assessment_to_edit,
+        'problem_id': assessment_id,
+        'user_assessments': user_assessments,
+        'assessment_problems': assessment_problems,
+    }
+    return render(request, template_name, context)

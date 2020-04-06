@@ -6,10 +6,14 @@
 {% block main-content-teacher %}
 
 <!--List of the assessments.-->
+{% if user_assessments %}
 <h1>Edit Assessment</h1>
 {% for assessment in user_assessments %}
 <ul><a href="{% url 'edit' assessment.id %}">{{ assessment }} </a></ul>
 {% endfor %}
+{% else %}
+No assessment to edit.
+{% endif %}
 
 <!--Assessment currently edited.-->
 {% if current_assessment %}
@@ -24,27 +28,36 @@
     <a href="{% url 'edit-problem' problem.id %}">
         PROBLEM
         <br>Description:
-        <br>{{ problem.description }}
+        <ul>{{ problem.description }}</ul>
         <br>Question:
-        <br>{{ problem }}
-        <br>
-        <br>
-    </a>
+        <ul>{{ problem }}</ul>
+        <a href="{% url 'delete-problem' problem.id %}">Delete</a>
 </ul>
 {% endfor %}
+{% endif %}
+
+<!--Add problem to existing assessment.-->
+{% if current_assessment %}
+<br><a href="{% url 'add-problem' current_assessment.id %}">Add new Problem</a>
+{% endif %}
+{% if assessment_to_edit %}
+<form action="{% url 'add-problem' assessment_to_edit.id %}" method="post">
+    {% csrf_token %}
+    {{ create_problem_form.as_p }}
+    <input type="submit" value="Add" name="create-problem">
+</form>
 {% endif %}
 
 <!--This assessment available answers.-->
 {% if problem_answers_queryset %}
 <h3>Answers available for this problem:</h3>
 {% for answer in problem_answers_queryset %}
-<ul>{{ answer.answer }} <a href="{% url 'edit-answer' answer.id %}">Edit</a> <a
-        href="{% url 'delete-answer' answer.id %}">Delete</a></ul>
+<ul>{{ answer.answer }} <a href="{% url 'edit-answer' answer.id %}">Edit</a>
+    <a href="{% url 'delete-answer' answer.id %}">Delete</a></ul>
 {% endfor %}
 {% endif %}
 
 {% if problem_to_edit %}
-<h1>Edit Problem </h1>
 <!--Add answer to existing problem.-->
 <a href="{% url 'add-answer' problem_to_edit.id %}">Add new answer</a>
 {% if create_answer_form %}
@@ -52,13 +65,14 @@
 <form action="{% url 'add-answer' problem_to_edit.id %}" method="post">
     {% csrf_token %}
     {{ create_answer_form.as_p }}
-    <input type="submit" value="Create" name="create-answer">
+    <input type="submit" value="Add" name="create-answer">
 </form>
 {% endif %}
 {% endif %}
 
 <!--Problem being edited.-->
 {% if problem_to_edit and not create_answer_form %}
+<h1>Edit Problem </h1>
 <h3>description: </h3>{{ problem_to_edit.description }}
 <h3>question: </h3>{{ problem_to_edit }}
 <form action="{% url 'edit-problem' problem_to_edit.id %}" method="post">

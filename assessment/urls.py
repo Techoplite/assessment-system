@@ -10,5 +10,7 @@ urlpatterns = [
     path('edit-problem/<int:problem_id>/', views.edit_problem, name='edit-problem'),
     path('edit-answer/<int:answer_id>/', views.edit_answer, name='edit-answer'),
     path('delete-answer/<int:answer_id>/', views.delete_answer, name='delete-answer'),
+    path('delete-problem/<int:problem_id>/', views.delete_problem, name='delete-problem'),
     path('add-answer/<int:problem_id>/', views.add_answer, name='add-answer'),
+    path('add-problem/<int:assessment_id>/', views.add_problem, name='add-problem'),
 ]
