@@ -10,7 +10,14 @@
 {% for problem, answers in problems_and_answers.items %}
 <li>{{ problem }}</li>
 {% for answer in answers %}
-<ul>{{ answer }}</ul>
+<ul>
+    {{ answer }}
+    {% if answer.is_correct_answer == True %}
+    This answer has been selected as the correct one.
+    {% else %}
+    <a href="{% url 'set-correct-answer' answer.id %}">Select as correct answer</a>
+    {% endif %}
+</ul>
 {% endfor %}
 {% endfor %}
 

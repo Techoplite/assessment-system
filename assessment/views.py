@@ -55,7 +55,7 @@ def create_assessment(request):
         problem_answers_list = []
         problem_answers_queryset = Answer.objects.filter(creator=current_user, question=problem)
         for problem_answer_object in problem_answers_queryset:
-            problem_answers_list.append(problem_answer_object.answer)
+            problem_answers_list.append(problem_answer_object)
         problems_and_answers.update({problem: problem_answers_list})
 
     # Successfully create answer.
