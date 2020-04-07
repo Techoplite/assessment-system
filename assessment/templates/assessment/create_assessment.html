@@ -22,7 +22,7 @@
 {% endfor %}
 
 <!--Create problem.-->
-{% if not problem_to_be_answered %}
+{% if problem_to_be_answered == None %}
 <h1>Create Problem</h1>
 <form action="{% url 'create-assessment' %}" method="post">
     {% csrf_token %}
@@ -35,7 +35,7 @@
     {% csrf_token %}
     {{ create_answer_form.as_p }}
     <input type="submit" value="Create" name="create-answer">
-    <input type="submit" value="Finish Problem" name="problem-finished">
+    <a href="{% url 'finish-problem' problem_id=problem_to_be_answered.id  from_view='create-assessment' %}">Finish Problem</a>
 </form>
 {% endif %}
 

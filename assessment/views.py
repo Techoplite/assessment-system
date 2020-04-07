@@ -33,20 +33,14 @@ def create_assessment(request):
     assessment_problems = Problem.objects.filter(creator=current_user, assessment=temporary_assessment)
 
     # Check if a problem is finished.
-    problem_to_be_answered = assessment_problems.last()
+    problem_to_be_answered = assessment_problems.exclude(is_finished=True).last()
+    print(problem_to_be_answered)
     problem_finished = None
     problem_answers = None
 
-    is_problem_finished = Answer.objects.filter(problem_finished=True)
-
-    if is_problem_finished:
-        problem_finished = Answer.objects.get(problem_finished=True).question
-        last_answer = Answer.objects.get(problem_finished=True)
-        last_answer.problem_finished = False
-        last_answer.save()
-    if assessment_problems and problem_finished:
+    if assessment_problems and not problem_to_be_answered:
         problem_to_be_answered = None
-    elif assessment_problems and not problem_finished:
+    elif assessment_problems and problem_to_be_answered:
         problem_to_be_answered = assessment_problems.last()
 
     # Fetch the answers related to the current problem.
@@ -67,21 +61,6 @@ def create_assessment(request):
                 creator=current_user,
                 question=problem_to_be_answered,
                 answer=answer
-            )
-            new_answer.save()
-            return redirect(create_assessment)
-
-    # All answers to a problem
-    # have been created. Finish the problem.
-    if request.method == 'POST' and 'problem-finished' in request.POST:
-        create_answer_form = CreateAnswerForm(request.POST)
-        if create_answer_form.is_valid():
-            answer = create_answer_form.cleaned_data['answer']
-            new_answer = Answer.objects.create(
-                creator=current_user,
-                question=problem_to_be_answered,
-                answer=answer,
-                problem_finished=True
             )
             new_answer.save()
             return redirect(create_assessment)
@@ -535,3 +514,14 @@ def set_correct_answer(request, answer_id):
         answer.save()
 
     return redirect(edit_problem, problem_id=problem_id)
+
+
+def finish_problem(request, problem_id, from_view):
+    problem_being_edited = Problem.objects.get(id=problem_id)
+    problem_being_edited.is_finished = True
+    problem_being_edited.save()
+
+    if from_view == 'create-assessment':
+        return redirect(create_assessment)
+    elif from_view == 'edit-problem':
+        return redirect(edit_problem, id=problem_id)
