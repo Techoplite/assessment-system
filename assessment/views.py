@@ -275,7 +275,7 @@ def edit_problem(request, problem_id):
         initial=
         {
             'description': description_to_be_edited,
-            'question': question_to_be_edited
+            'question': question_to_be_edited,
         }
     )
     # Successfully edit the problem.
@@ -515,3 +515,23 @@ def add_problem(request, assessment_id):
         'problem_edited_to_be_answered': problem_edited_to_be_answered,
     }
     return render(request, template_name, context)
+
+
+def set_correct_answer(request, answer_id):
+    correct_answer = Answer.objects.get(id=answer_id)
+    correct_answer.is_correct_answer = True
+    correct_answer.save()
+
+    # Fetch the problem being edited to redirect to.
+    problem_being_edited = correct_answer.question
+    problem_id = problem_being_edited.id
+
+    # Fetch the other answers to this problem
+    # and, if any is set as correct, change value to False.
+    other_answers = Answer.objects.filter(question=problem_being_edited, is_correct_answer=True).exclude(
+        id=correct_answer.id)
+    for answer in other_answers:
+        answer.is_correct_answer = False
+        answer.save()
+
+    return redirect(edit_problem, problem_id=problem_id)

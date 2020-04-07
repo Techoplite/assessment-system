@@ -57,8 +57,16 @@ No assessment to edit.
 {% if problem_answers_queryset %}
 <h3>Answers available for this problem:</h3>
 {% for answer in problem_answers_queryset %}
-<ul>{{ answer.answer }} <a href="{% url 'edit-answer' answer.id %}">Edit</a>
-    <a href="{% url 'delete-answer' answer.id %}">Delete</a></ul>
+<ul>{{ answer.answer }}
+    <a href="{% url 'edit-answer' answer.id %}">Edit</a>
+    <a href="{% url 'delete-answer' answer.id %}">Delete</a>
+    {% if answer.is_correct_answer == True %}
+    This answer has been selected as the correct one.
+    {% else %}
+    <a href="{% url 'set-correct-answer' answer.id %}">Select as correct answer</a>
+    {% endif %}
+
+</ul>
 {% endfor %}
 {% endif %}
 
