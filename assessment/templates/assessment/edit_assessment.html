@@ -28,8 +28,11 @@ No assessment to edit.
 <li>
     <a href="{% url 'edit-problem' problem.id %}">
         PROBLEM
-        <br>Description:
+        <br>
+        {% if problem.description != '' %}
+        Description:
         <ul>{{ problem.description }}</ul>
+        {% endif %}
         <br>Question:
         <ul>{{ problem }}</ul>
         <a href="{% url 'delete-problem' problem.id %}">Delete</a>

@@ -34,8 +34,6 @@ def create_assessment(request):
 
     # Check if a problem is finished.
     problem_to_be_answered = assessment_problems.exclude(is_finished=True).last()
-    print(problem_to_be_answered)
-    problem_finished = None
     problem_answers = None
 
     if assessment_problems and not problem_to_be_answered:
@@ -210,10 +208,8 @@ def edit(request, assessment_id):
     # and inform the user.
     problem_with_no_answer = None
     for question in Problem.objects.filter(creator=request.user):
-        print(f'THIS ARE ALL USER PROBLEMS: {question}')
         if len(Answer.objects.filter(creator=request.user, question=question)) == 0:
             problem_with_no_answer = question
-            print(f'THIS IS A PROBLEM WITH NO ANSWER: {problem_with_no_answer}')
 
     template_name = 'edit_assessment.html'
 
@@ -359,7 +355,6 @@ def add_answer(request, problem_id):
                 creator=current_user,
                 question=problem_to_edit,
                 answer=answer,
-                problem_finished=True
             )
             new_answer.save()
             messages.success(request, f'Answer "{new_answer}" successfully added to problem "{problem_to_edit}".')
@@ -386,7 +381,6 @@ def delete_problem(request, problem_id):
     # Fetch the assessment ID
     # to pass to the redirect function.
     assessment_id = problem_to_delete.assessment.id
-    print(assessment_id)
 
     return redirect(edit, assessment_id=assessment_id)
 
@@ -409,22 +403,13 @@ def add_problem(request, assessment_id):
     assessment_problems = Problem.objects.filter(creator=current_user, assessment=assessment_to_edit)
 
     # Check if a problem is finished.
-    problem_edited_to_be_answered = assessment_problems.last()
-    print(problem_edited_to_be_answered)
-    problem_finished = None
-    problem_answers = None
+    problem_to_be_answered = assessment_problems.exclude(is_finished=True).last()
 
-    is_problem_finished = Answer.objects.filter(problem_finished=True)
-
-    if is_problem_finished:
-        problem_finished = Answer.objects.get(problem_finished=True).question
-        last_answer = Answer.objects.get(problem_finished=True)
-        last_answer.problem_finished = False
-        last_answer.save()
-    if assessment_problems and problem_finished:
+    if assessment_problems and not problem_to_be_answered:
         problem_to_be_answered = None
-    elif assessment_problems and not problem_finished:
+    elif assessment_problems and problem_to_be_answered:
         problem_to_be_answered = assessment_problems.last()
+    print(problem_to_be_answered)
 
     # Successfully add problem.
     if request.method == 'POST' and 'create-problem' in request.POST:
@@ -437,6 +422,7 @@ def add_problem(request, assessment_id):
                 assessment=assessment_to_edit,
                 description=description,
                 question=question,
+                is_finished=False
             )
             new_problem.save()
             messages.success(request, f'Problem "{new_problem}" successfully added to problem "{assessment_to_edit}".')
@@ -474,7 +460,6 @@ def add_problem(request, assessment_id):
                 creator=current_user,
                 question=problem_to_be_answered,
                 answer=answer,
-                problem_finished=True
             )
             new_answer.save()
             return redirect(add_problem, assessment_id=assessment_to_edit.id)
@@ -491,7 +476,7 @@ def add_problem(request, assessment_id):
         'problem_id': assessment_id,
         'user_assessments': user_assessments,
         'assessment_problems': assessment_problems,
-        'problem_edited_to_be_answered': problem_edited_to_be_answered,
+        'problem_to_be_answered': problem_to_be_answered,
     }
     return render(request, template_name, context)
 
