@@ -15,4 +15,5 @@ urlpatterns = [
     path('add-answer/<int:problem_id>/', views.add_answer, name='add-answer'),
     path('add-problem/<int:assessment_id>/', views.add_problem, name='add-problem'),
     path('create-assessment/finish-problem/<int:problem_id>/<str:from_view>/', views.finish_problem, name='finish-problem'),
+    path('find-assessment/', views.find_assessment, name='find-assessment'),
 ]

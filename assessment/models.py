@@ -7,7 +7,7 @@ class Assessment(models.Model):
     title = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.title} - ID: {self.id}'
 
 
 class Problem(models.Model):

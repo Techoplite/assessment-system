@@ -1,0 +1,23 @@
+{% extends 'home.html' %}
+
+{% block title %}Find Assessment{% endblock %}
+
+
+{% block main-content-student %}
+
+<!--Search Box.-->
+<h2>Find Assessment</h2>
+<form action="{% url 'find-assessment' %}" method="post">
+    {% csrf_token %}
+    {{ find_assessment_form.as_p }}
+    <input type="submit" value="Search">
+</form>
+
+{% if not searched_assessment %}
+There is no assessment with ID "{{ search }}"
+{% else %}
+{{ searched_assessment.title }}
+{% endif %}
+
+{% endblock %}
+

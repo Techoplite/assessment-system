@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .forms import CreateAssessmentForm, CreateProblemForm, CreateAnswerForm
+from .forms import CreateAssessmentForm, CreateProblemForm, CreateAnswerForm, FindAssessmentForm
 from .models import Assessment, Problem, Answer
 from accounts.models import User
 from core.views import home
@@ -529,3 +529,27 @@ def finish_problem(request, problem_id, from_view):
         return redirect(create_assessment)
     elif from_view == 'edit-problem':
         return redirect(edit_problem, problem_id=problem_id)
+
+
+def find_assessment(request):
+    find_assessment_form = FindAssessmentForm()
+
+    searched_assessment = None
+    search = None
+
+    if request.method == 'POST':
+        find_assessment_form = FindAssessmentForm(request.POST)
+        if find_assessment_form.is_valid():
+            search = find_assessment_form.cleaned_data['search']
+            searched_assessment_queryset = Assessment.objects.filter(id=search)
+            if searched_assessment_queryset:
+                searched_assessment = searched_assessment_queryset.first().title
+
+    template_name = 'find_assessment.html'
+
+    context = {
+        'find_assessment_form': find_assessment_form,
+        'searched_assessment': searched_assessment,
+        'search': search,
+    }
+    return render(request, template_name, context)

@@ -29,3 +29,7 @@ class CreateAnswerForm(ModelForm):
         fields = [
             'answer',
         ]
+
+
+class FindAssessmentForm(forms.Form):
+    search = forms.IntegerField(localize=True)
