@@ -14,8 +14,8 @@
     {{ answer }}
     {% if answer.is_correct_answer == True %}
     This answer has been selected as the correct one.
-    {% else %}
-    <a href="{% url 'set-correct-answer' answer.id %}">Select as correct answer</a>
+    {% elif problem_to_be_answered == None %}
+    <a href="{% url 'set-correct-answer' answer_id=answer.id from_view='create-assessment' %}">Select as correct answer</a>
     {% endif %}
 </ul>
 {% endfor %}
@@ -30,7 +30,7 @@
     <input type="submit" value="Create" name="create-problem">
 </form>
 {% else %}
-<h1>Create an answer to "{{ problem_to_be_answered }}"</h1>
+<h1>Create an answer to </h1>"{{ problem_to_be_answered }}"
 <form action="{% url 'create-assessment' %}" method="post">
     {% csrf_token %}
     {{ create_answer_form.as_p }}

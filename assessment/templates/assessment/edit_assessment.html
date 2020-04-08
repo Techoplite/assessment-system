@@ -35,11 +35,12 @@ No assessment to edit.
         {% endif %}
         <br>Question:
         <ul>{{ problem }}</ul>
-        <a href="{% url 'delete-problem' problem.id %}">Delete</a>
-        <br>{% if problem_with_no_answer == problem %}
-        ATTENTION: this problem is missing an available answer.
-        Please create one.
-        {% endif %}
+    </a>
+    <a href="{% url 'delete-problem' problem.id %}">Delete</a>
+    <br>{% if problem_with_no_answer == problem %}
+    ATTENTION: this problem is missing an available answer.
+    Please create one.
+    {% endif %}
 </li>
 {% endfor %}
 {% endif %}
@@ -52,7 +53,9 @@ No assessment to edit.
 <form action="{% url 'add-problem' assessment_to_edit.id %}" method="post">
     {% csrf_token %}
     {{ create_problem_form.as_p }}
-    <input type="submit" value="Add" name="create-problem">
+    Once you click the 'Add' button, remember to add available answers to this problem by selecting it in the list
+    above.
+    <br><input type="submit" value="Add" name="create-problem">
 </form>
 {% endif %}
 
@@ -66,7 +69,7 @@ No assessment to edit.
     {% if answer.is_correct_answer == True %}
     This answer has been selected as the correct one.
     {% else %}
-    <a href="{% url 'set-correct-answer' answer.id %}">Select as correct answer</a>
+    <a href="{% url 'set-correct-answer' answer_id=answer.id from_view='edit-problem'%}">Select as correct answer</a>
     {% endif %}
 
 </ul>
@@ -75,10 +78,10 @@ No assessment to edit.
 
 {% if problem_to_edit %}
 <!--Add answer to existing problem.-->
-<a href="{% url 'add-answer' problem_to_edit.id %}">Add new answer</a>
+<a href="{% url 'add-answer' problem_id=problem_to_edit.id %}">Add new answer</a>
 {% if create_answer_form %}
 <h1>Create an answer to "{{ problem_to_edit }}"</h1>
-<form action="{% url 'add-answer' problem_to_edit.id %}" method="post">
+<form action="{% url 'add-answer' problem_id=problem_to_edit.id %}" method="post">
     {% csrf_token %}
     {{ create_answer_form.as_p }}
     <input type="submit" value="Add" name="create-answer">

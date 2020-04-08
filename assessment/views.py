@@ -232,6 +232,7 @@ def edit_problem(request, problem_id):
 
     # Fetch the assessment to be edited
     current_assessment = problem_to_edit.assessment
+    assessment_id = current_assessment.id
 
     # Fetch user id
     user_id = current_assessment.creator.id
@@ -242,6 +243,8 @@ def edit_problem(request, problem_id):
     # Fetch the answers related to this problem.
     problem_answers_list = []
     problem_answers_queryset = Answer.objects.filter(question=problem_to_edit)
+    for problem in problem_answers_queryset:
+        problem_answers_list.append(problem)
 
     # Initialize form.
     description_to_be_edited = problem_to_edit.description
@@ -273,6 +276,8 @@ def edit_problem(request, problem_id):
         'current_assessment': current_assessment,
         'user_assessments': user_assessments,
         'problem_answers_queryset': problem_answers_queryset,
+        'problem_id': problem_id,
+        'assessment_id': assessment_id,
     }
     return render(request, template_name, context)
 
@@ -481,7 +486,7 @@ def add_problem(request, assessment_id):
     return render(request, template_name, context)
 
 
-def set_correct_answer(request, answer_id):
+def set_correct_answer(request, answer_id, from_view):
     correct_answer = Answer.objects.get(id=answer_id)
     correct_answer.is_correct_answer = True
     correct_answer.save()
@@ -498,7 +503,10 @@ def set_correct_answer(request, answer_id):
         answer.is_correct_answer = False
         answer.save()
 
-    return redirect(edit_problem, problem_id=problem_id)
+    if from_view == 'create-assessment':
+        return redirect(create_assessment)
+    elif from_view == 'edit-problem':
+        return redirect(edit_problem, problem_id=problem_id)
 
 
 def finish_problem(request, problem_id, from_view):
@@ -509,4 +517,4 @@ def finish_problem(request, problem_id, from_view):
     if from_view == 'create-assessment':
         return redirect(create_assessment)
     elif from_view == 'edit-problem':
-        return redirect(edit_problem, id=problem_id)
+        return redirect(edit_problem, problem_id=problem_id)
