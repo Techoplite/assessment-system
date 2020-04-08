@@ -24,7 +24,7 @@ No assessment to edit.
 <!--This assessment problems.-->
 {% if assessment_problems %}
 <h2>This assessment contains the following problems:</h2>
-{% for problem in assessment_problems %}
+{% for problem, data in problems_data.items %}
 <li>
     <a href="{% url 'edit-problem' problem.id %}">
         PROBLEM
@@ -35,6 +35,14 @@ No assessment to edit.
         {% endif %}
         <br>Question:
         <ul>{{ problem }}</ul>
+        <br>Available Answers:
+        {% for answer in data.0 %}
+        <ul>{{ answer.answer }}</ul>
+                {% endfor %}
+        {% for correct_answer in data.1 %}
+        <br>correct Answer:
+        <ul>{{ correct_answer.answer }}</ul>
+        {% endfor %}
     </a>
     <a href="{% url 'delete-problem' problem.id %}">Delete</a>
     <br>{% if problem_with_no_answer == problem %}
@@ -59,7 +67,7 @@ No assessment to edit.
 </form>
 {% endif %}
 
-<!--This assessment available answers.-->
+<!--This problem available answers.-->
 {% if problem_answers_queryset %}
 <h3>Answers available for this problem:</h3>
 {% for answer in problem_answers_queryset %}

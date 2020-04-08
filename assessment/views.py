@@ -200,6 +200,16 @@ def edit(request, assessment_id):
     # Fetch current user's problems.
     assessment_problems = Problem.objects.filter(creator=current_user, assessment=current_assessment)
 
+    # Fetch each problem answers nad the correct answer.
+    problems_data = {}
+    for problem in assessment_problems:
+        answers = Answer.objects.filter(creator=current_user, question=problem)
+        correct_answer = Answer.objects.filter(question=problem, is_correct_answer=True)
+
+        # Map problems, available answers and correct answers.
+        problems_data.update({problem : (answers, correct_answer)})
+    print(problems_data)
+
     # Initialize forms.
     create_problem_form = CreateProblemForm()
     create_assessment_form = CreateAssessmentForm()
@@ -220,6 +230,7 @@ def edit(request, assessment_id):
         'user_assessments': user_assessments,
         'current_assessment': current_assessment,
         'problem_with_no_answer': problem_with_no_answer,
+        'problems_data': problems_data,
     }
     return render(request, template_name, context)
 
