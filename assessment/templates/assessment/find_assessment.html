@@ -13,10 +13,12 @@
     <input type="submit" value="Search">
 </form>
 
-{% if not searched_assessment %}
-There is no assessment with ID "{{ search }}"
+{% if search == None and searched_assessment == None %}
+Please enter an assessment ID.
+{% elif not searched_assessment %}
+There is no assessment with ID "{{ search }}."
 {% else %}
-{{ searched_assessment.title }}
+<br><a href="">{{ searched_assessment.title }}</a>
 {% endif %}
 
 {% endblock %}
