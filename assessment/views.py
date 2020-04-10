@@ -569,15 +569,15 @@ def start_assessment(request, assessment_id, question_id):
     # Fetch the problems related to this assessment.
     problems = Problem.objects.filter(assessment=assessment)
 
-    # Fetch each problem available answers
+    # Fetch the current problem.
+    current_problem = Problem.objects.get(id=question_id)
+
+    # Fetch current problem available answers
     # and the correct answer.
-    for problem in problems:
-        answers = Answer.objects.filter(question=problem)
-        correct_answer = Answer.objects.get(question=problem, is_correct_answer=True)
+    answers = Answer.objects.filter(question=current_problem)
 
     # Fetch next problem to be answered.
     problems_list = list(problems)
-    current_problem = Problem.objects.get(id=question_id)
     next_problem_in_list = None
     for problem_index in range(len(problems_list)):
         current_problem_index = problems_list.index(current_problem)
@@ -600,5 +600,6 @@ def start_assessment(request, assessment_id, question_id):
         'assessment_form': assessment_form,
         'assessment_id': assessment_id,
         'next_problem': next_problem,
+        'current_problem': current_problem,
     }
     return render(request, template_name, context)

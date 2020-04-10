@@ -11,10 +11,18 @@
 {% for problem in problems %}
 <a href="{% url 'start-assessment' assessment_id=assessment_id question_id=problem.id %}">{{ forloop.counter }}</a>
 {% endfor %}
+{% if current_problem.description != '' %}
+<br>Description:
+{% endif %}
+<ul>{{ current_problem.description }}</ul>
+<br>Question:
+<ul>{{ current_problem }}</ul>
+<br>Available Answers:
+{% for answer in answers %}
+<ul>{{ answer }}</ul>
+{% endfor %}
 
 <form action="{% url 'start-assessment' assessment_id=assessment_id question_id=next_problem.id %}" method="post">
-    {{ question }}
-    {{ available_answers }}
     {% csrf_token %}
     {{ assessment_form }}
     <input type="submit" value="Next">
