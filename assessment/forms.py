@@ -33,3 +33,7 @@ class CreateAnswerForm(ModelForm):
 
 class FindAssessmentForm(forms.Form):
     search = forms.IntegerField(localize=True)
+
+
+class CarryOutAssessmentForm(forms.Form):
+    answer = forms.CharField()

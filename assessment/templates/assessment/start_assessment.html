@@ -1,0 +1,24 @@
+{% extends 'home.html' %}
+
+{% block title %}Start Assessment{% endblock %}
+
+
+{% block main-content-student %}
+
+<!--Assessment being carried out.-->
+<h2>Assessment</h2>
+<br>Questions:
+{% for problem in problems %}
+<a href="{% url 'start-assessment' assessment_id=assessment_id question_id=problem.id %}">{{ forloop.counter }}</a>
+{% endfor %}
+
+<form action="{% url 'start-assessment' assessment_id=assessment_id question_id=next_problem.id %}" method="post">
+    {{ question }}
+    {{ available_answers }}
+    {% csrf_token %}
+    {{ assessment_form }}
+    <input type="submit" value="Next">
+</form>
+
+{% endblock %}
+

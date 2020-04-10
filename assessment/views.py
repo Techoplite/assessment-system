@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .forms import CreateAssessmentForm, CreateProblemForm, CreateAnswerForm, FindAssessmentForm
+from .forms import CreateAssessmentForm, CreateProblemForm, CreateAnswerForm, FindAssessmentForm, CarryOutAssessmentForm
 from .models import Assessment, Problem, Answer
 from accounts.models import User
 from core.views import home
@@ -207,7 +207,7 @@ def edit(request, assessment_id):
         correct_answer = Answer.objects.filter(question=problem, is_correct_answer=True)
 
         # Map problems, available answers and correct answers.
-        problems_data.update({problem : (answers, correct_answer)})
+        problems_data.update({problem: (answers, correct_answer)})
     print(problems_data)
 
     # Initialize forms.
@@ -532,6 +532,7 @@ def finish_problem(request, problem_id, from_view):
 
 
 def find_assessment(request):
+    # Initialize find assessment form.
     find_assessment_form = FindAssessmentForm()
 
     searched_assessment = None
@@ -545,11 +546,59 @@ def find_assessment(request):
             if searched_assessment_queryset:
                 searched_assessment = searched_assessment_queryset.first().title
 
+    # Fetch first assessment problem to start assessment.
+    first_problem = None
+    if searched_assessment:
+        first_problem = Problem.objects.filter(assessment=search).first()
+
     template_name = 'find_assessment.html'
 
     context = {
         'find_assessment_form': find_assessment_form,
         'searched_assessment': searched_assessment,
         'search': search,
+        'first_problem': first_problem,
+    }
+    return render(request, template_name, context)
+
+
+def start_assessment(request, assessment_id, question_id):
+    # Fetch the assessment to be carried out.
+    assessment = Assessment.objects.get(id=assessment_id)
+
+    # Fetch the problems related to this assessment.
+    problems = Problem.objects.filter(assessment=assessment)
+
+    # Fetch each problem available answers
+    # and the correct answer.
+    for problem in problems:
+        answers = Answer.objects.filter(question=problem)
+        correct_answer = Answer.objects.get(question=problem, is_correct_answer=True)
+
+    # Fetch next problem to be answered.
+    problems_list = list(problems)
+    current_problem = Problem.objects.get(id=question_id)
+    next_problem_in_list = None
+    for problem_index in range(len(problems_list)):
+        current_problem_index = problems_list.index(current_problem)
+        for problem_in_list in problems_list:
+            if current_problem_index == len(problems_list) - 1:
+                next_problem_in_list = problems_list[0]
+            else:
+                next_problem_in_list = problems_list[current_problem_index + 1]
+    next_problem = Problem.objects.get(question=next_problem_in_list)
+
+    # Initiate assessment form.
+    assessment_form = CarryOutAssessmentForm()
+
+    template_name = 'start_assessment.html'
+
+    context = {
+        'assessment': assessment,
+        'problems': problems,
+        'answers': answers,
+        'assessment_form': assessment_form,
+        'assessment_id': assessment_id,
+        'next_problem': next_problem,
     }
     return render(request, template_name, context)
