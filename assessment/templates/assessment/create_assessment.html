@@ -14,7 +14,7 @@
     {{ answer }}
     {% if answer.is_correct_answer == True %}
     This answer has been selected as the correct one.
-    {% elif problem_to_be_answered == None %}
+    {% else %}
     <a href="{% url 'set-correct-answer' answer_id=answer.id from_view='create-assessment' %}">Select as correct answer</a>
     {% endif %}
 </ul>

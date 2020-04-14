@@ -36,4 +36,9 @@ class FindAssessmentForm(forms.Form):
 
 
 class CarryOutAssessmentForm(forms.Form):
-    answer = forms.CharField()
+    answer = forms.ChoiceField()
+
+    def __init__(self, choices, **kwargs):
+        super(CarryOutAssessmentForm, self).__init__(**kwargs)
+        self.fields['answer'].choices = choices
+

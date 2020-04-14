@@ -22,11 +22,12 @@
 <ul>{{ answer }}</ul>
 {% endfor %}
 
-<form action="{% url 'start-assessment' assessment_id=assessment_id question_id=next_problem.id %}" method="post">
+<form action="{% url 'start-assessment' assessment_id=assessment_id question_id=current_problem.id %}" method="post">
     {% csrf_token %}
     {{ assessment_form }}
-    <input type="submit" value="Next">
+    <input type="submit" value="Select">
 </form>
+<a href="{% url 'start-assessment' assessment_id=assessment_id question_id=next_problem.id %}">Next</a>
 
 {% endblock %}
 

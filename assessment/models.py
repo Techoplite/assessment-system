@@ -29,3 +29,13 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.answer
+
+
+class AnswerGiven(models.Model):
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False)
+    question = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    student_answer = models.CharField(max_length=255, blank=True, null=True)
+    correct_answer = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f'Question: "{self.question}", Answer given: "{self.student_answer}", Correct answer: "{self.correct_answer}"'

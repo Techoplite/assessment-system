@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from .forms import CreateAssessmentForm, CreateProblemForm, CreateAnswerForm, FindAssessmentForm, CarryOutAssessmentForm
-from .models import Assessment, Problem, Answer
+from .models import Assessment, Problem, Answer, AnswerGiven
 from accounts.models import User
 from core.views import home
 
@@ -562,7 +562,7 @@ def find_assessment(request):
     return render(request, template_name, context)
 
 
-def start_assessment(request, assessment_id, question_id):
+def start_assessment(request, assessment_id, question_id, ):
     # Fetch the assessment to be carried out.
     assessment = Assessment.objects.get(id=assessment_id)
 
@@ -574,7 +574,39 @@ def start_assessment(request, assessment_id, question_id):
 
     # Fetch current problem available answers
     # and the correct answer.
+    answers_list = []
     answers = Answer.objects.filter(question=current_problem)
+
+    # Initiate assessment form.
+    for answer in answers:
+        answers_list.append((answer.answer, answer.answer))
+
+    assessment_form = CarryOutAssessmentForm(choices=answers_list,
+                                             initial={
+                                                 'description': current_problem.description,
+                                                 'question': current_problem.question, }
+                                             )
+
+    correct_answer = Answer.objects.get(question=current_problem, is_correct_answer=True).answer
+    answer_given = AnswerGiven.objects.filter(student=request.user, question=current_problem, )
+
+    if answer_given is not None:
+        answer_given.delete()
+        answer_given = AnswerGiven(
+            student=request.user,
+            question=current_problem,
+            correct_answer=correct_answer,
+            student_answer=None
+        )
+        answer_given.save()
+    else:
+        answer_given = AnswerGiven(
+            student=request.user,
+            question=current_problem,
+            correct_answer=correct_answer,
+            student_answer=None
+        )
+        answer_given.save()
 
     # Fetch next problem to be answered.
     problems_list = list(problems)
@@ -588,8 +620,12 @@ def start_assessment(request, assessment_id, question_id):
                 next_problem_in_list = problems_list[current_problem_index + 1]
     next_problem = Problem.objects.get(question=next_problem_in_list)
 
-    # Initiate assessment form.
-    assessment_form = CarryOutAssessmentForm()
+    if request.method == 'POST':
+        student_answer = request.POST['answer']
+        answer_given.student_answer = student_answer
+        answer_given.save()
+
+    print(answer_given)
 
     template_name = 'start_assessment.html'
 
