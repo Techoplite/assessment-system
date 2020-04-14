@@ -40,3 +40,15 @@ class AnswerGiven(models.Model):
 
     def __str__(self):
         return f'Question: "{self.question}", Answer given: "{self.student_answer}", Correct answer: "{self.correct_answer}"'
+
+
+class Result(models.Model):
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False)
+    assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE)
+    correct_answers_number = models.IntegerField()
+    total_assessment_questions = models.IntegerField()
+    errors_number = models.IntegerField()
+    correct_answers_percentage = models.DecimalField(max_digits=3, decimal_places=1)
+
+    def __str__(self):
+        return f'Assessment "{self.assessment}", answered by {self.student}'

@@ -17,6 +17,8 @@
 Please enter an assessment ID.
 {% elif not searched_assessment %}
 There is no assessment with ID "{{ search }}."
+{% elif assessment_already_answered %}
+{{ assessment_already_answered.assessment }} has already been answered by you ({{ assessment_already_answered.student }}).
 {% else %}
 <br><a href="{% url 'start-assessment' assessment_id=search question_id=first_problem.id %}">{{ searched_assessment.title }}</a>
 {% endif %}

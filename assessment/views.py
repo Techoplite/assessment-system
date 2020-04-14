@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from .forms import CreateAssessmentForm, CreateProblemForm, CreateAnswerForm, FindAssessmentForm, CarryOutAssessmentForm
-from .models import Assessment, Problem, Answer, AnswerGiven
+from .models import Assessment, Problem, Answer, AnswerGiven, Result
 from accounts.models import User
 from core.views import home
 
@@ -551,6 +551,19 @@ def find_assessment(request):
     if searched_assessment:
         first_problem = Problem.objects.filter(assessment=search).first()
 
+    # Fetch the user.
+    student = request.user
+
+    # Fetch the assessment.
+    assessment = searched_assessment
+
+    assessments_already_answered = Result.objects.filter(student=student, assessment=search)
+    if assessments_already_answered:
+        assessment_already_answered = Result.objects.get(student=student, assessment=search)
+        print(assessment_already_answered)
+    else:
+        assessment_already_answered = None
+
     template_name = 'find_assessment.html'
 
     context = {
@@ -558,6 +571,7 @@ def find_assessment(request):
         'searched_assessment': searched_assessment,
         'search': search,
         'first_problem': first_problem,
+        'assessment_already_answered': assessment_already_answered,
     }
     return render(request, template_name, context)
 
@@ -581,11 +595,8 @@ def start_assessment(request, assessment_id, question_id, ):
     answer_given = AnswerGiven.objects.filter(student=request.user, question=current_problem)
 
     student_answer = None
-    if answer_given is not None:
-        answer_given = AnswerGiven.objects.get(student=request.user, question=current_problem, )
-        student_answer = answer_given.student_answer
-        answer_given.save()
-    else:
+    if not answer_given:
+        print('code is here')
         answer_given = AnswerGiven(
             assessment=assessment,
             student=request.user,
@@ -593,6 +604,12 @@ def start_assessment(request, assessment_id, question_id, ):
             correct_answer=correct_answer,
             student_answer=None
         )
+        answer_given.save()
+        print(answer_given)
+
+    if answer_given:
+        answer_given = AnswerGiven.objects.get(student=request.user, question=current_problem)
+        student_answer = answer_given.student_answer
         answer_given.save()
 
     # Initiate assessment form.
@@ -651,8 +668,6 @@ def finish_assessment(request, assessment_id):
 
     # Fetch student.
     student = request.user
-    print(student)
-    print(assessment)
 
     # Fetch the answers given.
     answers_given = AnswerGiven.objects.filter(
@@ -670,7 +685,22 @@ def finish_assessment(request, assessment_id):
     for answer_given in answers_given:
         if answer_given.student_answer != answer_given.correct_answer:
             errors_number += 1
-    correct_answers_percentage = (correct_answers_number * 100)/total_assessment_questions
+    correct_answers_percentage = (correct_answers_number * 100) / total_assessment_questions
+
+    # Create a record for the result.
+    Result.objects.create(
+        student=student,
+        assessment=assessment,
+        correct_answers_number=correct_answers_number,
+        total_assessment_questions=total_assessment_questions,
+        errors_number=errors_number,
+        correct_answers_percentage=correct_answers_percentage,
+    )
+
+    assessments_already_answered = Result.objects.filter(student=student, assessment=assessment)
+    if assessments_already_answered:
+        assessment_already_answered = Result.objects.get(student=student, assessment=assessment)
+        print(assessment_already_answered)
 
     template_name = 'finish_assessment.html'
 
