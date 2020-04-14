@@ -1,0 +1,15 @@
+{% extends 'home.html' %}
+
+{% block title %}Result{% endblock %}
+
+
+{% block main-content-student %}
+
+<!--Assessment being carried out.-->
+<h2>Result for assessment "{{ assessment }}"</h2>
+With {{ correct_answers_number }} correct answers out of {{ total_assessment_questions }}
+and {{ errors_number }} errors
+you have answered correctly to the {{ correct_answers_percentage }}% of the questions.
+
+{% endblock %}
+

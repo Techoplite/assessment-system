@@ -584,9 +584,7 @@ def start_assessment(request, assessment_id, question_id, ):
     if answer_given is not None:
         answer_given = AnswerGiven.objects.get(student=request.user, question=current_problem, )
         student_answer = answer_given.student_answer
-        print(student_answer)
         answer_given.save()
-        print(f'This should display the previously selected answer. {answer_given.student_answer}')
     else:
         answer_given = AnswerGiven(
             assessment=assessment,
@@ -596,7 +594,6 @@ def start_assessment(request, assessment_id, question_id, ):
             student_answer=None
         )
         answer_given.save()
-        print('code reached here and should not')
 
     # Initiate assessment form.
     for answer in answers:
@@ -634,8 +631,6 @@ def start_assessment(request, assessment_id, question_id, ):
                                                      'answer': student_answer}
                                                  )
 
-    print(answer_given)
-
     template_name = 'start_assessment.html'
 
     context = {
@@ -655,7 +650,9 @@ def finish_assessment(request, assessment_id):
     assessment = Assessment.objects.get(id=assessment_id)
 
     # Fetch student.
-    student = assessment.creator
+    student = request.user
+    print(student)
+    print(assessment)
 
     # Fetch the answers given.
     answers_given = AnswerGiven.objects.filter(
@@ -663,9 +660,25 @@ def finish_assessment(request, assessment_id):
         student=student,
     )
 
+    # Context.
+    correct_answers_number = 0
+    for answer_given in answers_given:
+        if answer_given.student_answer == answer_given.correct_answer:
+            correct_answers_number += 1
+    total_assessment_questions = len(answers_given)
+    errors_number = 0
+    for answer_given in answers_given:
+        if answer_given.student_answer != answer_given.correct_answer:
+            errors_number += 1
+    correct_answers_percentage = (correct_answers_number * 100)/total_assessment_questions
+
     template_name = 'finish_assessment.html'
 
     context = {
         'assessment': assessment,
+        'correct_answers_number': correct_answers_number,
+        'total_assessment_questions': total_assessment_questions,
+        'errors_number': errors_number,
+        'correct_answers_percentage': correct_answers_percentage,
     }
     return render(request, template_name, context)
