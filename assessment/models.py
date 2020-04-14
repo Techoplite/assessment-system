@@ -32,6 +32,7 @@ class Answer(models.Model):
 
 
 class AnswerGiven(models.Model):
+    assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE)
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False)
     question = models.ForeignKey(Problem, on_delete=models.CASCADE)
     student_answer = models.CharField(max_length=255, blank=True, null=True)

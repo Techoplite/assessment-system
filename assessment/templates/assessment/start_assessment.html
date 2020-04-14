@@ -15,7 +15,7 @@
 <br>Description:
 {% endif %}
 <ul>{{ current_problem.description }}</ul>
-<br>Question:
+<br>Question number :
 <ul>{{ current_problem }}</ul>
 <br>Available Answers:
 {% for answer in answers %}
@@ -28,6 +28,7 @@
     <input type="submit" value="Select">
 </form>
 <a href="{% url 'start-assessment' assessment_id=assessment_id question_id=next_problem.id %}">Next</a>
+<a href="{% url 'finish-assessment' assessment_id=assessment_id %}">Finish Assessment</a>
 
 {% endblock %}
 

@@ -577,6 +577,27 @@ def start_assessment(request, assessment_id, question_id, ):
     answers_list = []
     answers = Answer.objects.filter(question=current_problem)
 
+    correct_answer = Answer.objects.get(question=current_problem, is_correct_answer=True).answer
+    answer_given = AnswerGiven.objects.filter(student=request.user, question=current_problem)
+
+    student_answer = None
+    if answer_given is not None:
+        answer_given = AnswerGiven.objects.get(student=request.user, question=current_problem, )
+        student_answer = answer_given.student_answer
+        print(student_answer)
+        answer_given.save()
+        print(f'This should display the previously selected answer. {answer_given.student_answer}')
+    else:
+        answer_given = AnswerGiven(
+            assessment=assessment,
+            student=request.user,
+            question=current_problem,
+            correct_answer=correct_answer,
+            student_answer=None
+        )
+        answer_given.save()
+        print('code reached here and should not')
+
     # Initiate assessment form.
     for answer in answers:
         answers_list.append((answer.answer, answer.answer))
@@ -584,29 +605,9 @@ def start_assessment(request, assessment_id, question_id, ):
     assessment_form = CarryOutAssessmentForm(choices=answers_list,
                                              initial={
                                                  'description': current_problem.description,
-                                                 'question': current_problem.question, }
+                                                 'question': current_problem.question,
+                                                 'answer': student_answer}
                                              )
-
-    correct_answer = Answer.objects.get(question=current_problem, is_correct_answer=True).answer
-    answer_given = AnswerGiven.objects.filter(student=request.user, question=current_problem, )
-
-    if answer_given is not None:
-        answer_given.delete()
-        answer_given = AnswerGiven(
-            student=request.user,
-            question=current_problem,
-            correct_answer=correct_answer,
-            student_answer=None
-        )
-        answer_given.save()
-    else:
-        answer_given = AnswerGiven(
-            student=request.user,
-            question=current_problem,
-            correct_answer=correct_answer,
-            student_answer=None
-        )
-        answer_given.save()
 
     # Fetch next problem to be answered.
     problems_list = list(problems)
@@ -620,10 +621,18 @@ def start_assessment(request, assessment_id, question_id, ):
                 next_problem_in_list = problems_list[current_problem_index + 1]
     next_problem = Problem.objects.get(question=next_problem_in_list)
 
+    # POST request.
     if request.method == 'POST':
         student_answer = request.POST['answer']
         answer_given.student_answer = student_answer
         answer_given.save()
+        # Initiate assessment form with current selected answer.
+        assessment_form = CarryOutAssessmentForm(choices=answers_list,
+                                                 initial={
+                                                     'description': current_problem.description,
+                                                     'question': current_problem.question,
+                                                     'answer': student_answer}
+                                                 )
 
     print(answer_given)
 
@@ -637,5 +646,26 @@ def start_assessment(request, assessment_id, question_id, ):
         'assessment_id': assessment_id,
         'next_problem': next_problem,
         'current_problem': current_problem,
+    }
+    return render(request, template_name, context)
+
+
+def finish_assessment(request, assessment_id):
+    # Fetch submitted assessment.
+    assessment = Assessment.objects.get(id=assessment_id)
+
+    # Fetch student.
+    student = assessment.creator
+
+    # Fetch the answers given.
+    answers_given = AnswerGiven.objects.filter(
+        assessment=assessment,
+        student=student,
+    )
+
+    template_name = 'finish_assessment.html'
+
+    context = {
+        'assessment': assessment,
     }
     return render(request, template_name, context)
