@@ -133,10 +133,9 @@ div#right-side-teacher {
 }
 
 ul {
-  font-family: 'Armata';
+  font-family: 'Rosario';
   color: #3366ff;
-  font-size: 80%;
-  font-weight: bold;
+  font-size: 100%;
   list-style-type: none;
   padding: 5px;
   background-color: #e6e6e6;
@@ -158,6 +157,7 @@ h1 {
   font-family: 'Armata';
   font-size: 130%;
   margin-bottom: 30px;
+  margin-top: 30px;
   color: #3366ff;
 }
 
