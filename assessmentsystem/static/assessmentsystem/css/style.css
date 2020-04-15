@@ -10,10 +10,10 @@
 
 .col-1 {width: 8.33%;}
 .col-2 {width: 16.66%;}
-.col-3 {width: 25%;}
+.col-3 {width: 30%;}
 .col-4 {width: 33.33%;}
 .col-5 {width: 41.66%;}
-.col-6 {width: 50%;}
+.col-6 {width: 40%;}
 .col-7 {width: 58.33%;}
 .col-8 {width: 66.66%;}
 .col-9 {width: 75%;}
@@ -24,12 +24,14 @@
 body {
   font-family: sans-serif;
   margin: 3%;
+  background-image: url("/static/assessmentsystem/images/pxfuel.com.jpg") 100 0 no-repeat fixed;
 }
 
 #logo {
   text-align: center;
   font-family: 'Armata';
-  font-size: 130%;
+  font-size: 2em;
+  margin-top: 30px;
 }
 
 .logo {
@@ -54,9 +56,9 @@ a:link {
 
 .navbar-button {
   color: white;
-  font-family: 'Blinker';
+  font-family: 'Armata';
   margin-right: 15px;
-  font-size: 150%;
+  font-size: 120%;
   border-right: 1px solid #b3c6ff;
   padding-right: 15px;
 }
@@ -82,37 +84,43 @@ a:hover.navbar-button {
 
 .left-side-button {
   color: white;
-  font-family: 'Blinker';
-  font-size: 150%;
+  font-family: 'Armata';
+  font-size: 120%;
   background-color: #3366ff;
-  padding: 3px;
+  padding-right: 3px;
   padding-left: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   display: block;
-  width: 150px;
   border-left: 5px solid #b3c6ff;
+  margin-bottom: -12px;
+  margin-right: 30px;
 }
 
 a:hover.left-side-button {
+  background-color: #99b3ff;
   color: white;
   text-shadow: 1.4px 0.2px 0.5px #99b3ff;
 }
 
 .right-side-title {
-  font-family: 'Blinker';
+  font-family: 'Armata';
   color: white;
-  font-size: 120%;
+  font-size: 100%;
   margin-block-start: 0px;
-  margin-block-end: 5px;
+  margin-block-end: 2px;
   background-color: #3366ff;
   padding: 6px;
   font-weight: normal;
   text-align: center;
   border-left: 5px solid #b3c6ff;
+  margin-left: 15px;
+
 }
 
 #left-side-teacher {
   padding: 0px;
-
+  margin-top: -2px;
 }
 
 #left-side-student {
@@ -125,10 +133,180 @@ div#right-side-teacher {
 }
 
 ul {
+  font-family: 'Armata';
+  color: #3366ff;
+  font-size: 80%;
+  font-weight: bold;
   list-style-type: none;
   padding: 5px;
   background-color: #e6e6e6;
   margin-block-start: 0px;
   margin-block-end: 2px;
   border-left: 5px solid #f2f2f2;
+  border-bottom: 1px solid #f2f2f2;
+  border-top: 1px solid #f2f2f2;
+}
+
+h2 {
+  font-family: 'Armata';
+  font-size: 130%;
+  margin-top: 0px;
+}
+
+h1 {
+  text-align: center;
+  font-family: 'Armata';
+  font-size: 130%;
+  margin-bottom: 30px;
+  color: #3366ff;
+}
+
+label {
+  font-family: 'Armata';
+  font-size: 100%;
+  font-weight: bold;
+  margin-top: 0px;
+  color: #3366ff;
+}
+input[type=text], select {
+font-family: 'Armata';
+  color: #595959;
+  font-weight: bold;
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  font-family: 'Armata';
+  font-size: 100%;
+  width: 100%;
+  background-color: #3366ff;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #4d79ff
+;
+}
+
+#reset {
+  background-color: #ff3333;
+}
+
+#reset:hover {
+  background-color: #ff4d4d;
+}
+
+textarea {
+  font-family: 'Armata';
+  color: #595959;
+  font-weight: bold;
+  resize: none;
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#main-content-teacher {
+  margin-top: 15px;
+  background-color: #e6e6e6;
+  padding: 2%;
+  border: 1px solid #d9d9d9;
+}
+
+h3 {
+  font-family: 'Armata';
+  font-size: 100%;
+  margin-top: 0px;
+  color: #3366ff;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+h2 {
+  font-family: 'Armata';
+  font-size: 100%;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  color: #3366ff;
+  border-left: 5 solid #3366ff;
+  padding-left: 5px;
+}
+
+#text {
+  font-family: 'Armata';
+  font-size: 130%;
+  margin-top: 0px;
+  margin-bottom: 30px;
+  color: #3366ff;
+}
+
+#problems {
+  margin-top: 0px;
+}
+
+input[type=submit] {
+  font-family: 'Armata';
+  font-size: 100%;
+  width: 100%;
+  background-color: #3366ff;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+}
+
+a#finish-problem {
+  font-family: 'Armata';
+  font-size: 100%;
+  width: 100%;
+  background-color: #009900;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+}
+
+a#finish-problem:hover {
+  background-color: #00b300;
+}
+
+input#generate {
+  font-family: 'Armata';
+  font-size: 100%;
+  width: 100%;
+  background-color: #009900;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+}
+
+input#generate:hover {
+  background-color: #00b300;
+}
+
+.assessments-list {
+  margin-left: 15px;
 }

@@ -6,16 +6,20 @@
 {% block main-content-teacher %}
 
 <!--Problems in assessment.-->
-<h2>This assessment contains the following problems:</h2>
+{% if problems_and_answers %}
+<h2 id="problems">This assessment contains the following problems:</h2>
+{% endif %}
 {% for problem, answers in problems_and_answers.items %}
-<li>{{ problem }}</li>
+<ul>{{ problem }}</ul>
+<h2>Answers available:</h2>
 {% for answer in answers %}
 <ul>
     {{ answer }}
     {% if answer.is_correct_answer == True %}
     This answer has been selected as the correct one.
     {% else %}
-    <a href="{% url 'set-correct-answer' answer_id=answer.id from_view='create-assessment' %}">Select as correct answer</a>
+    <a href="{% url 'set-correct-answer' answer_id=answer.id from_view='create-assessment' %}">Select as correct
+        answer</a>
     {% endif %}
 </ul>
 {% endfor %}
@@ -30,12 +34,13 @@
     <input type="submit" value="Create" name="create-problem">
 </form>
 {% else %}
-<h1>Create an answer to </h1>"{{ problem_to_be_answered }}"
+<h1>Create an answer to <br>"{{ problem_to_be_answered }}"</h1>
 <form action="{% url 'create-assessment' %}" method="post">
     {% csrf_token %}
     {{ create_answer_form.as_p }}
     <input type="submit" value="Create" name="create-answer">
-    <a href="{% url 'finish-problem' problem_id=problem_to_be_answered.id  from_view='create-assessment' %}">Finish Problem</a>
+    <a id="finish-problem" href="{% url 'finish-problem' problem_id=problem_to_be_answered.id  from_view='create-assessment' %}">Finish
+        Problem</a>
 </form>
 {% endif %}
 
@@ -44,8 +49,8 @@
 <form action="{% url 'create-assessment' %}" method="post">
     {% csrf_token %}
     {{ create_assessment_form.as_p }}
-    <input type="submit" value="Generate" name="create-assessment">
-    <input type="submit" value="Reset" name="reset-assessment">
+    <input id="generate" type="submit" value="Generate" name="create-assessment">
+    <input type="submit" value="Reset" id="reset" name="reset-assessment">
 </form>
 {% endblock %}
 
