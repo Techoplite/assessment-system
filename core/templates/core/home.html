@@ -6,33 +6,35 @@
 
 <!--Logo-->
 <div class="col-12" id="logo">
-    <h1><a href="{% url 'home' %}">The Assessment System</a></h1>
+    <h1><a href="{% url 'home' %}" class="logo">The Assessment System</a></h1>
 </div>
 
 
 <!--Navbar-->
 <div class="col-12" id="navbar">
     {% if not user.is_authenticated %}
-    <a href="{% url 'login' %}">Log In</a>
-    <a href="{% url 'signup' %}">Sign Up</a>
+    <a href="{% url 'login' %}" class="navbar-button">Log In</a>
+    <a href="{% url 'signup' %}" class="navbar-button">Sign Up</a>
     {% else %}
     {% if user.is_admin %}
-    <a href="/admin/">Admin</a>
+    <a href="/admin/" class="navbar-button">Admin</a>
     {% endif %}
-    <a href="{% url 'logout' %}">Log Out</a>
+    <a href="{% url 'logout' %}" class="navbar-button">Log Out</a>
     {% endif %}
 </div>
 
+{% if messages %}
 <!--Messages-->
 <div class="col-12" id="messages">
     {% if messages %}
-    <ul>
+    <ul class="messages">
         {% for message in messages %}
         {{ message }}
         {% endfor %}
     </ul>
     {% endif %}
 </div>
+{% endif %}
 
 {% if not user.is_authenticated %}
 <!--Anonymous user Home Page-->
@@ -51,10 +53,9 @@
 {% if user.role == 'Teacher' %}
 
 <div class="col-3" id="left-side-teacher">
-    <h2>Assessment</h2>
-    <br><a href="{% url 'create-assessment' %}" name="create-assessment">Create</a>
-    <br><a href="{% url 'delete-assessment' %}" name="delete-assessment">Delete</a>
-    <br><a href="{% url 'edit-assessment' %}" name="edit-assessment">Edit</a>
+    <br><a href="{% url 'create-assessment' %}" name="create-assessment" class="left-side-button">Create</a>
+    <br><a href="{% url 'delete-assessment' %}" name="delete-assessment" class="left-side-button">Delete</a>
+    <br><a href="{% url 'edit-assessment' %}" name="edit-assessment" class="left-side-button">Edit</a>
 </div>
 
 <div class="col-6" id="main-content-teacher">
@@ -64,9 +65,9 @@
 
 <div class="col-3" id="right-side-teacher">
     {% if user_assessments %}
-    <h3>Your assessments:</h3>
+    <h3 class="right-side-title">Your assessments</h3>
     {% for assessment in user_assessments %}
-    <li>{{ assessment }}</li>
+    <ul>{{ assessment }}</ul>
     {% endfor %}
     {% else %}
     <h3>You have no assessments.</h3>
@@ -78,7 +79,6 @@
 {% elif user.role == 'Student' %}
 
 <div class="col-3" id="left-side-student">
-    <h2>Assessment</h2>
     <br><a href="{% url 'find-assessment' %}" name="find-assessment">Find Assessment</a>
 </div>
 
@@ -89,9 +89,9 @@
 
 <div class="col-3" id="right-side-student">
     {% if user_assessments %}
-    <h3>Your assessments:</h3>
+    <h3 class="right-side-title">Your assessments</h3>
     {% for assessment in user_assessments %}
-    <li>{{ assessment }}</li>
+    <ul>{{ assessment }}</ul>
     {% endfor %}
     {% else %}
     <h3>You have no assessments.</h3>

@@ -5,7 +5,7 @@
 [class*="col-"] {
   float: left;
   padding: 15px;
-  border: 1px solid red;
+  border: 1px ;
 }
 
 .col-1 {width: 8.33%;}
@@ -27,4 +27,100 @@ body {
 
 #logo {
   text-align: center;
+  font-family: 'Armata';
+  font-size: 2.3vw;
+}
+
+.logo {
+ color: #3366ff;
+ text-shadow: 2px 2px #b3c6ff;
+}
+
+a:hover.logo {
+  color: #4d79ff;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+#navbar {
+  background-color: #3366ff;
+  border-top: 2px solid #b3c6ff;
+  border-bottom: 2px solid #b3c6ff;
+  border-left: 5px solid #b3c6ff;
+}
+
+.navbar-button {
+  color: white;
+  font-family: 'Blinker';
+  margin-right: 5px;
+  font-size: 180%;
+}
+
+a:hover.navbar-button {
+  color: white;
+  text-shadow: 1.4px 0.2px 0.5px #99b3ff;
+}
+
+.messages {
+  border-left: 3px solid #3366ff;
+  padding-left: 10px;
+  color: #3366ff;
+  font-size: 18px;
+  background-color: #e6e6e6;
+  padding: 5px;
+}
+
+.left-side-button {
+  color: white;
+  font-family: 'Blinker';
+  font-size: 180%;
+  background-color: #3366ff;
+  padding: 3px;
+  padding-left: 15px;
+  display: block;
+  width: 150px;
+  border-left: 5px solid #b3c6ff;
+}
+
+a:hover.left-side-button {
+  color: white;
+  text-shadow: 1.4px 0.2px 0.5px #99b3ff;
+}
+
+.right-side-title {
+  font-family: 'Blinker';
+  color: white;
+  font-size: 140%;
+  margin-block-start: 0px;
+  margin-block-end: 5px;
+  background-color: #3366ff;
+  padding: 6px;
+  font-weight: normal;
+  text-align: center;
+  border-left: 5px solid #b3c6ff;
+}
+
+#left-side-teacher {
+  padding: 0px;
+
+}
+
+#left-side-student {
+  padding: 0px;
+}
+
+div#right-side-teacher {
+  float: left;
+  padding-right: 0px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 5px;
+  background-color: #e6e6e6;
+  margin-block-start: 0px;
+  margin-block-end: 2px;
+  padding-left: 15px;
 }
