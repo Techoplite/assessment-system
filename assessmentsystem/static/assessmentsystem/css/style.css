@@ -131,6 +131,11 @@ div#right-side-teacher {
   padding-right: 0px;
 }
 
+div#right-side-student {
+  float: left;
+  padding-right: 0px;
+}
+
 ul {
   font-family: 'Rosario';
   color: #3366ff;
