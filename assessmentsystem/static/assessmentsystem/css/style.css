@@ -229,6 +229,15 @@ textarea {
   border: 1px solid #d9d9d9;
 }
 
+#main-content-student {
+  font-family: 'Armata';
+  color: black;
+  margin-top: 15px;
+  background-color: #e6e6e6;
+  padding: 2%;
+  border: 1px solid #d9d9d9;
+}
+
 h3 {
   font-family: 'Armata';
   font-size: 100%;
