@@ -7,9 +7,20 @@
 
 {% if user_assessments %}
 <h1>Delete Assessment</h1>
-{% for assessment in user_assessments %}
-<ul>{{ assessment }} <a href="{% url 'delete' assessment.id %}">X</a></ul>
-{% endfor %}
+<table>
+    {% for assessment in user_assessments %}
+    <tr>
+        <td>
+            <ul>{{ assessment }}</ul>
+        </td>
+        <td>
+            <ul><a href="{% url 'delete' assessment.id %}">X</a></ul>
+        </td>
+    </tr>
+    <tr></tr>
+    {% endfor %}
+</table>
+
 {% else %}
 No assessment to delete.
 {% endif %}
