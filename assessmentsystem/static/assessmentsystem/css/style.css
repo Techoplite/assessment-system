@@ -348,3 +348,12 @@ a#add-problem {
 a#add-problem:hover {
   background-color: #00b300;
 }
+
+a#editable-assessment {
+  color: #3366ff;
+}
+
+a#editable-assessment:hover {
+  color: #0040ff;
+  text-shadow: 0.5px 0.5px #668cff;
+}

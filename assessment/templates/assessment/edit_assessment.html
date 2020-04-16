@@ -9,7 +9,7 @@
 {% if user_assessments %}
 <h1>Edit Assessment</h1>
 {% for assessment in user_assessments %}
-<ul><a href="{% url 'edit' assessment.id %}">{{ assessment }} </a></ul>
+<ul><a id="editable-assessment" href="{% url 'edit' assessment.id %}">{{ assessment }} </a></ul>
 {% endfor %}
 {% else %}
 No assessment to edit.
