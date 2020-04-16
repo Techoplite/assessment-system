@@ -38,7 +38,7 @@ No assessment to edit.
         <br>Available Answers:
         {% for answer in data.0 %}
         <ul>{{ answer.answer }}</ul>
-                {% endfor %}
+        {% endfor %}
         {% for correct_answer in data.1 %}
         <br>correct Answer:
         <ul>{{ correct_answer.answer }}</ul>
@@ -62,31 +62,37 @@ No assessment to edit.
     {% csrf_token %}
     {{ create_problem_form.as_p }}
     <h2>Once you click the 'Add' button, remember to add available answers to this problem by selecting it in the list
-    above.</h2>
+        above.</h2>
     <br><input type="submit" value="Add" name="create-problem">
 </form>
 {% endif %}
 
 <!--This problem available answers.-->
 {% if problem_answers_queryset %}
-<h3>Answers available for this problem:</h3>
+<h3 id="answers-available">Answers available for this problem:</h3>
 {% for answer in problem_answers_queryset %}
-<ul>{{ answer.answer }}
-    <a href="{% url 'edit-answer' answer.id %}">Edit</a>
-    <a href="{% url 'delete-answer' answer.id %}">Delete</a>
-    {% if answer.is_correct_answer == True %}
-    This answer has been selected as the correct one.
-    {% else %}
-    <a href="{% url 'set-correct-answer' answer_id=answer.id from_view='edit-problem'%}">Select as correct answer</a>
-    {% endif %}
+<table id="editable-answers">
+    <tr>
+        <td>
+            <ul class="answer">{{ answer.answer }}</ul>
+        </td>
+        <td><a id="edit-answer" href="{% url 'edit-answer' answer.id %}">Edit</a></td>
+        <td><a id="delete-answer" href="{% url 'delete-answer' answer.id %}">Delete</a></td>
+        {% if answer.is_correct_answer == True %}
+        <h4 id="correct">This answer has been selected as the correct one.</h4>
+        {% else %}
+        <h4 class="select-as-correct"><a id="select-as-correct" href="{% url 'set-correct-answer' answer_id=answer.id from_view='edit-problem'%}">Select
+            as correct answer</a></h4>
+        {% endif %}
 
-</ul>
+    </tr>
+</table>
 {% endfor %}
 {% endif %}
 
 {% if problem_to_edit %}
 <!--Add answer to existing problem.-->
-<a href="{% url 'add-answer' problem_id=problem_to_edit.id %}">Add new answer</a>
+<a href="{% url 'add-answer' problem_id=problem_to_edit.id %}"  id="add-answer">Add new answer</a>
 {% if create_answer_form %}
 <h1>Create an answer to "{{ problem_to_edit }}"</h1>
 <form action="{% url 'add-answer' problem_id=problem_to_edit.id %}" method="post">

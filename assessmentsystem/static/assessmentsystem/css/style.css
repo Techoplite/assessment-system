@@ -157,7 +157,6 @@ h1 {
   font-family: 'Armata';
   font-size: 130%;
   margin-bottom: 30px;
-  margin-top: 30px;
   color: #3366ff;
 }
 
@@ -223,6 +222,8 @@ textarea {
 }
 
 #main-content-teacher {
+  font-family: 'Armata';
+  color: black;
   margin-top: 15px;
   background-color: #e6e6e6;
   padding: 2%;
@@ -243,7 +244,7 @@ h2 {
   font-size: 100%;
   font-weight: bold;
   margin-top: 30px;
-  margin-bottom: 30px;
+  margin-bottom: 0px;
   color: #3366ff;
   border-left: 5 solid #3366ff;
   padding-left: 5px;
@@ -350,10 +351,106 @@ a#add-problem:hover {
 }
 
 a#editable-assessment {
-  color: #3366ff;
+  color: #009900;
 }
 
 a#editable-assessment:hover {
-  color: #0040ff;
+  color: #00b300;
+  text-shadow: 0.5px 0.5px #00b300;
+}
+
+h4 {
+  font-family: 'Armata';
+  font-size: 80%;
+  margin-top: 50px;
+  color: white;
+  padding: 10px;
+  background-color: #3366ff;
+  display: inline-block;
+  margin-block-end: 0px;
+}
+
+a#delete-answer {
+  font-family: 'Armata';
+  font-size: 100%;
+  width: 100%;
+  background-color: #ff3333;
+  color: white;
+  padding: 5px 5px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+}
+
+a#delete-answer:hover {
+  background-color: #ff4d4d;
+}
+
+a#edit-answer {
+  font-family: 'Armata';
+  font-size: 100%;
+  width: 100%;
+  background-color: #009900;
+  color: white;
+  padding: 5px 5px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+}
+
+a#edit-answer:hover {
+  background-color: #00b300;
+}
+
+table#editable-answers {
+  width: 100%;
+}
+
+td {
+  width: 33%;
+}
+
+a#select-as-correct {
+  color: white;
+}
+
+a#select-as-correct:hover {
+  color: #3366ff;
   text-shadow: 0.5px 0.5px #668cff;
+}
+
+h4.select-as-correct:hover {
+    background-color: #b3c6ff;
+}
+
+h4#correct {
+  background-color: #e6b800;
+}
+
+h3#answers-available {
+  margin-top: 50px;
+  margin-bottom: 0px;
+}
+
+a#add-answer {
+  font-family: 'Armata';
+  font-size: 100%;
+  width: 100%;
+  background-color: #009900;
+  color: white;
+  padding: 14px 20px;
+  margin-top: 30px;
+  margin-bottom: 60px;
+  border: none;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+}
+
+a#add-answer:hover {
+  background-color: #00b300;
 }
