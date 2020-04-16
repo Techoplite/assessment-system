@@ -25,7 +25,6 @@ body {
   font-family: sans-serif;
   margin-left: 3%;
   margin-right: 3%;
-  background-image: url("/static/assessmentsystem/images/pxfuel.com.jpg") 100 0 no-repeat fixed;
 }
 
 #logo {
@@ -453,4 +452,16 @@ a#add-answer {
 
 a#add-answer:hover {
   background-color: #00b300;
+}
+
+a#start-assessment {
+  font-family: 'Armata';
+  color: white;
+  background-color: #e6b800;
+  padding: 5px;
+}
+
+a#start-assessment:hover {
+  color: white;
+  text-shadow: 1px 1px lightgrey;
 }

@@ -14,13 +14,13 @@
 </form>
 
 {% if search == None and searched_assessment == None %}
-Please enter an assessment ID.
+<h3>Please enter an assessment ID.</h3>
 {% elif not searched_assessment %}
-There is no assessment with ID "{{ search }}."
+<h3>There is no assessment with ID "{{ search }}."</h3>
 {% elif assessment_already_answered %}
-{{ assessment_already_answered.assessment }} has already been answered by you ({{ assessment_already_answered.student }}).
+<h3>"{{ assessment_already_answered.assessment }}" has already been answered by you ({{ assessment_already_answered.student }}).</h3>
 {% else %}
-<br><a href="{% url 'start-assessment' assessment_id=search question_id=first_problem.id %}">{{ searched_assessment.title }}</a>
+<br><a href="{% url 'start-assessment' assessment_id=search question_id=first_problem.id %}" id="start-assessment">{{ searched_assessment.title }}</a>
 {% endif %}
 
 {% endblock %}
