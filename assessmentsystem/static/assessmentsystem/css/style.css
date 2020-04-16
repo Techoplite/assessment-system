@@ -173,12 +173,13 @@ font-family: 'Armata';
   color: #595959;
   font-weight: bold;
   width: 100%;
-  padding: 12px 20px;
+  padding: 12px 12px;
   margin: 8px 0;
   display: inline-block;
   border: 1px solid #d9d9d9;
   border-radius: 4px;
   box-sizing: border-box;
+  font-size: 70%;
 }
 
 input[type=submit] {
@@ -212,12 +213,13 @@ textarea {
   font-weight: bold;
   resize: none;
   width: 100%;
-  padding: 12px 20px;
+  padding: 12px 12px;
   margin: 8px 0;
   display: inline-block;
   border: 1px solid #d9d9d9;
   border-radius: 4px;
   box-sizing: border-box;
+  font-size: 70%;
 }
 
 #main-content-teacher {
@@ -309,4 +311,40 @@ input#generate:hover {
 
 .assessments-list {
   margin-left: 15px;
+}
+
+a#delete-problem {
+  font-family: 'Armata';
+  font-size: 100%;
+  width: 100%;
+  background-color: #ff3333;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+}
+
+a#delete-problem:hover {
+  background-color: #ff4d4d;
+}
+
+a#add-problem {
+  font-family: 'Armata';
+  font-size: 100%;
+  width: 100%;
+  background-color: #009900;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+}
+
+a#add-problem:hover {
+  background-color: #00b300;
 }

@@ -25,9 +25,9 @@ No assessment to edit.
 {% if assessment_problems %}
 <h2>This assessment contains the following problems:</h2>
 {% for problem, data in problems_data.items %}
-<li>
+<ul>
     <a href="{% url 'edit-problem' problem.id %}">
-        PROBLEM
+        <h2>PROBLEM</h2>
         <br>
         {% if problem.description != '' %}
         Description:
@@ -44,25 +44,25 @@ No assessment to edit.
         <ul>{{ correct_answer.answer }}</ul>
         {% endfor %}
     </a>
-    <a href="{% url 'delete-problem' problem.id %}">Delete</a>
+    <a id="delete-problem" href="{% url 'delete-problem' problem.id %}">Delete</a>
     <br>{% if problem_with_no_answer == problem %}
     ATTENTION: this problem is missing an available answer.
     Please create one.
     {% endif %}
-</li>
+</ul>
 {% endfor %}
 {% endif %}
 
 <!--Add problem to existing assessment.-->
 {% if current_assessment %}
-<br><a href="{% url 'add-problem' current_assessment.id %}">Add new Problem</a>
+<br><a id="add-problem" href="{% url 'add-problem' current_assessment.id %}">Add new Problem</a>
 {% endif %}
 {% if assessment_to_edit %}
 <form action="{% url 'add-problem' assessment_to_edit.id %}" method="post">
     {% csrf_token %}
     {{ create_problem_form.as_p }}
-    Once you click the 'Add' button, remember to add available answers to this problem by selecting it in the list
-    above.
+    <h2>Once you click the 'Add' button, remember to add available answers to this problem by selecting it in the list
+    above.</h2>
     <br><input type="submit" value="Add" name="create-problem">
 </form>
 {% endif %}
