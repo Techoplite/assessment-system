@@ -48,7 +48,7 @@ class Result(models.Model):
     correct_answers_number = models.IntegerField()
     total_assessment_questions = models.IntegerField()
     errors_number = models.IntegerField()
-    correct_answers_percentage = models.DecimalField(max_digits=3, decimal_places=1)
+    correct_answers_percentage = models.DecimalField(max_digits=4, decimal_places=1)
 
     def __str__(self):
         return f'Assessment "{self.assessment}", answered by {self.student}'

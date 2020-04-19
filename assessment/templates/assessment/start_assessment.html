@@ -28,7 +28,7 @@
     <input type="submit" value="Select">
     <a href="{% url 'start-assessment' assessment_id=assessment_id question_id=next_problem.id %}" id="next">Next</a>
 </form>
-<a href="{% url 'finish-assessment' assessment_id=assessment_id %}">Finish Assessment</a>
+<a href="{% url 'finish-assessment' assessment_id=assessment_id %}" id="finish">Finish Assessment</a>
 
 {% endblock %}
 

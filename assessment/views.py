@@ -565,7 +565,7 @@ def find_assessment(request):
         Result.objects.filter(student=student, assessment=search).exclude(pk=first.pk).delete()
         assessment_already_answered = Result.objects.get(student=student, assessment=search)
     else:
-        assessment_already_answered = None
+        assessment_already_answered = Result.objects.get(student=student, assessment=search)
 
     template_name = 'find_assessment.html'
 
@@ -703,9 +703,13 @@ def finish_assessment(request, assessment_id):
     assessments_already_answered = Result.objects.filter(student=student, assessment=assessment)
     if len(assessments_already_answered) == 1:
         assessment_already_answered = Result.objects.get(student=student, assessment=assessment)
+        assessment_already_answered.save()
     else:
-        Result.objects.filter(student=student, assessment=assessment).exclude(
-            Result.objects.filter(student=student, assessment=assessment).last()).delete()
+        first = Result.objects.filter(student=student, assessment=assessment).first()
+        Result.objects.filter(student=student, assessment=assessment).exclude(pk=first.pk).delete()
+        assessment_already_answered = Result.objects.get(student=student, assessment=assessment)
+        assessment_already_answered.save()
+        print(assessment_already_answered)
         return redirect(find_assessment)
 
     template_name = 'finish_assessment.html'

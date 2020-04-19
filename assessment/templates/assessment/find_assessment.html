@@ -18,9 +18,11 @@
 {% elif not searched_assessment %}
 <h3>There is no assessment with ID "{{ search }}."</h3>
 {% elif assessment_already_answered %}
-<h3>"{{ assessment_already_answered.assessment }}" has already been answered by you ({{ assessment_already_answered.student }}).</h3>
+<h3>"{{ assessment_already_answered.assessment }}" has already been answered by you (
+    {{ assessment_already_answered.student }}).</h3>
 {% else %}
-<br><a href="{% url 'start-assessment' assessment_id=search question_id=first_problem.id %}" id="start-assessment">{{ searched_assessment.title }}</a>
+<br><a href="{% url 'start-assessment' assessment_id=search question_id=first_problem.id %}" id="start-assessment">{{
+    searched_assessment.title }}</a>
 {% endif %}
 
 {% endblock %}
