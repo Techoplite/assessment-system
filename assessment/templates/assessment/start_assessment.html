@@ -7,12 +7,12 @@
 
 <!--Assessment being carried out.-->
 <h2>Assessment</h2>
-<br>Questions:
+<h2>Questions:
 {% for problem in problems %}
 <a href="{% url 'start-assessment' assessment_id=assessment_id question_id=problem.id %}">{{ forloop.counter }}</a>
-{% endfor %}
+{% endfor %}</h2>
 {% if current_problem.description != '' %}
-<br>Description:
+<h2>Description:</h2>
 {% endif %}
 <ul>{{ current_problem.description }}</ul>
 <br>Question number :
@@ -26,8 +26,8 @@
     {% csrf_token %}
     {{ assessment_form }}
     <input type="submit" value="Select">
+    <a href="{% url 'start-assessment' assessment_id=assessment_id question_id=next_problem.id %}" id="next">Next</a>
 </form>
-<a href="{% url 'start-assessment' assessment_id=assessment_id question_id=next_problem.id %}">Next</a>
 <a href="{% url 'finish-assessment' assessment_id=assessment_id %}">Finish Assessment</a>
 
 {% endblock %}

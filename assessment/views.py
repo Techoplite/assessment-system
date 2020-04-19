@@ -323,7 +323,7 @@ def edit_answer(request, answer_id):
             answer = edit_answer_form.cleaned_data['answer']
             answer_to_edit.answer = answer
             answer_to_edit.save()
-            messages.success(request, f'Answer successfully changed form "{previous_answer}" to "{answer}".')
+            messages.success(request, f'Answer successfully changed from "{previous_answer}" to "{answer}".')
             return redirect(edit_problem, problem_id=problem_id)
 
     template_name = 'edit_assessment.html'
@@ -555,13 +555,15 @@ def find_assessment(request):
     # Fetch the user.
     student = request.user
 
-    # Fetch the assessment.
-    assessment = searched_assessment
-
     assessments_already_answered = Result.objects.filter(student=student, assessment=search)
-    if assessments_already_answered:
+
+    # Check if there are multiple results for
+    # this assessment and retain only the first one.
+    # P.S. any other instance should be treated as 'created by mistake'.
+    if len(assessments_already_answered) > 1:
+        first = Result.objects.filter(student=student, assessment=search).first()
+        Result.objects.filter(student=student, assessment=search).exclude(pk=first.pk).delete()
         assessment_already_answered = Result.objects.get(student=student, assessment=search)
-        print(assessment_already_answered)
     else:
         assessment_already_answered = None
 
@@ -699,9 +701,12 @@ def finish_assessment(request, assessment_id):
     )
 
     assessments_already_answered = Result.objects.filter(student=student, assessment=assessment)
-    if assessments_already_answered:
+    if len(assessments_already_answered) == 1:
         assessment_already_answered = Result.objects.get(student=student, assessment=assessment)
-        print(assessment_already_answered)
+    else:
+        Result.objects.filter(student=student, assessment=assessment).exclude(
+            Result.objects.filter(student=student, assessment=assessment).last()).delete()
+        return redirect(find_assessment)
 
     template_name = 'finish_assessment.html'
 
@@ -711,5 +716,6 @@ def finish_assessment(request, assessment_id):
         'total_assessment_questions': total_assessment_questions,
         'errors_number': errors_number,
         'correct_answers_percentage': correct_answers_percentage,
+        'assessment_already_answered': assessment_already_answered,
     }
     return render(request, template_name, context)
