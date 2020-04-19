@@ -156,6 +156,11 @@ h2 {
   margin-top: 0px;
 }
 
+h2#problems {
+  margin-bottom: 15px;
+  padding-left: 0px;
+}
+
 h1 {
   text-align: center;
   font-family: 'Armata';
@@ -327,7 +332,7 @@ input#generate:hover {
   margin-left: 15px;
 }
 
-a#delete-problem {
+a.delete-problem {
   font-family: 'Armata';
   font-size: 100%;
   width: 100%;
@@ -341,7 +346,7 @@ a#delete-problem {
   text-align: center;
 }
 
-a#delete-problem:hover {
+a.delete-problem:hover {
   background-color: #ff4d4d;
 }
 
@@ -478,4 +483,31 @@ a#start-assessment {
 a#start-assessment:hover {
   color: white;
   text-shadow: 1px 1px lightgrey;
+}
+
+a#back-to-problems-list {
+  font-family: 'Armata';
+  font-size: 100%;
+  width: 100%;
+  background-color: #009900;
+  color: white;
+  padding: 14px 20px;
+  margin-top: 15px;
+  border: none;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+}
+
+a#back-to-problems-list:hover {
+  background-color: #00b300;
+}
+
+h2#editable-assessment {
+  color: #009900;
+}
+
+h2#editable-problem:hover {
+  color: #00b300;
+  text-shadow: 0.5px 0.5px #00b300;
 }

@@ -49,6 +49,7 @@ def create_assessment(request):
         for problem_answer_object in problem_answers_queryset:
             problem_answers_list.append(problem_answer_object)
         problems_and_answers.update({problem: problem_answers_list})
+    print(problems_and_answers)
 
     # Successfully create answer.
     if request.method == 'POST' and 'create-answer' in request.POST:

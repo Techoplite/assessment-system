@@ -10,7 +10,9 @@
 <h2 id="problems">This assessment contains the following problems:</h2>
 {% endif %}
 {% for problem, answers in problems_and_answers.items %}
-<ul>{{ problem }}</ul>
+<h3>PROBLEM</h3>
+<ul>DESCRIPTION: {{ problem.description }}</ul>
+<ul>QUESTION: {{ problem }}</ul>
 <h2>Answers available:</h2>
 {% for answer in answers %}
 <ul>

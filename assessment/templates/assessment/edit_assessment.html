@@ -22,12 +22,12 @@ No assessment to edit.
 {% endif %}
 
 <!--This assessment problems.-->
-{% if assessment_problems %}
+{% if assessment_problems and not assessment_to_edit%}
 <h2>This assessment contains the following problems:</h2>
 {% for problem, data in problems_data.items %}
 <ul>
     <a href="{% url 'edit-problem' problem.id %}">
-        <h2>PROBLEM</h2>
+        <h2 id="editable-problem">PROBLEM</h2>
         <br>
         {% if problem.description != '' %}
         Description:
@@ -35,20 +35,27 @@ No assessment to edit.
         {% endif %}
         <br>Question:
         <ul>{{ problem }}</ul>
+        <a class="delete-problem" href="{% url 'delete-problem' problem.id %}">Delete</a>
+        {% if not data.0 %}
+        ATTENTION: this problem is missing an available answer.
+        Please create one.
+        {% else %}
         <br>Available Answers:
         {% for answer in data.0 %}
         <ul>{{ answer.answer }}</ul>
         {% endfor %}
+        {% if not data.1 %}
+        This problem is missing a correct answer. please select one.
         {% for correct_answer in data.1 %}
-        <br>correct Answer:
+        <br>Correct Answer:
         <ul>{{ correct_answer.answer }}</ul>
-        {% endfor %}
     </a>
-    <a id="delete-problem" href="{% url 'delete-problem' problem.id %}">Delete</a>
-    <br>{% if problem_with_no_answer == problem %}
-    ATTENTION: this problem is missing an available answer.
-    Please create one.
+    <a class="delete-problem" href="{% url 'delete-problem' problem.id %}">Delete</a>
+    {% endfor %}
     {% endif %}
+    {% endif %}
+
+
 </ul>
 {% endfor %}
 {% endif %}
@@ -58,6 +65,9 @@ No assessment to edit.
 <br><a id="add-problem" href="{% url 'add-problem' current_assessment.id %}">Add new Problem</a>
 {% endif %}
 {% if assessment_to_edit %}
+<a href="{% url 'edit' assessment_to_edit.id %}" id="back-to-problems-list">Go back to problems list and add an answers
+    available for a newly created problem.</a>
+<h2>Adding new problem to assessment "{{ assessment_to_edit }}"</h2>
 <form action="{% url 'add-problem' assessment_to_edit.id %}" method="post">
     {% csrf_token %}
     {{ create_problem_form.as_p }}
@@ -81,7 +91,8 @@ No assessment to edit.
         {% if answer.is_correct_answer == True %}
         <h4 id="correct">This answer has been selected as the correct one.</h4>
         {% else %}
-        <h4 class="select-as-correct"><a id="select-as-correct" href="{% url 'set-correct-answer' answer_id=answer.id from_view='edit-problem'%}">Select
+        <h4 class="select-as-correct"><a id="select-as-correct"
+                                         href="{% url 'set-correct-answer' answer_id=answer.id from_view='edit-problem'%}">Select
             as correct answer</a></h4>
         {% endif %}
 
@@ -92,7 +103,7 @@ No assessment to edit.
 
 {% if problem_to_edit %}
 <!--Add answer to existing problem.-->
-<a href="{% url 'add-answer' problem_id=problem_to_edit.id %}"  id="add-answer">Add new answer</a>
+<a href="{% url 'add-answer' problem_id=problem_to_edit.id %}" id="add-answer">Add new answer</a>
 {% if create_answer_form %}
 <h1>Create an answer to "{{ problem_to_edit }}"</h1>
 <form action="{% url 'add-answer' problem_id=problem_to_edit.id %}" method="post">
@@ -114,7 +125,7 @@ No assessment to edit.
     {% if problem_answers_queryset %}
     <input type="submit" name="edit-problem" value="Finish">
     {% else %}
-    An asessment must contain at list one answer to be subbitted.
+    An asessment must contain at list one answer to be submitted.
     {% endif %}
 </form>
 {% endif %}
