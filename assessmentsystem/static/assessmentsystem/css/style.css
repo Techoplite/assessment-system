@@ -557,10 +557,14 @@ a#next:finish {
   background-color: #ff4d4d;
 }
 
-h2#student-results {
+h2.student-results {
   margin-bottom: 30px;
 }
 
 form {
   padding: inherit;
+}
+
+ul.student-results {
+    margin-left: 15px;
 }

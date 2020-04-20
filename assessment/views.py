@@ -570,6 +570,9 @@ def find_assessment(request):
     else:
         assessment_already_answered = None
 
+    # Fetch student results.
+    student_results = Result.objects.filter(student=student)
+
     template_name = 'find_assessment.html'
 
     context = {
@@ -578,6 +581,7 @@ def find_assessment(request):
         'search': search,
         'first_problem': first_problem,
         'assessment_already_answered': assessment_already_answered,
+        'student_results': student_results,
     }
     return render(request, template_name, context)
 

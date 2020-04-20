@@ -79,7 +79,7 @@
 <!--Student Home Page-->
 {% elif user.role == 'Student' %}
 <div class="col-3" id="left-side-student">
-    <br><a href="{% url 'find-assessment' %}" name="find-assessment"class="left-side-button">Find Assessment</a>
+    <br><a href="{% url 'find-assessment' %}" name="find-assessment" class="left-side-button">Find Assessment</a>
 </div>
 
 <div class="col-6" id="main-content-student">
@@ -88,13 +88,16 @@
 </div>
 
 <div class="col-3" id="right-side-student">
-    {% if user_assessments %}
-    <h3 class="right-side-title">Your Assessments</h3>
-    {% for assessment in user_assessments %}
-    <ul id="assessments">{{ assessment }}</ul>
+    <h3 class="right-side-title">Your Results</h3>
+    {% if student_results %}
+    {% for result in student_results %}
+    <ul class="student-results">
+        <h2>{{ result }}</h2>
+        <h2>Result: {{ result.correct_answers_percentage }}%</h2>
+    </ul>
     {% endfor %}
     {% else %}
-    <h3 class="right-side-title">You have no assessments.</h3>
+    <ul>This student has no results yet.</ul>
     {% endif %}
 </div>
 {% endif %}
