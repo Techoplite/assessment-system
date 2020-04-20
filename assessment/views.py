@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .forms import CreateAssessmentForm, CreateProblemForm, CreateAnswerForm, FindAssessmentForm, CarryOutAssessmentForm
+from .forms import CreateAssessmentForm, CreateProblemForm, CreateAnswerForm, FindAssessmentForm, \
+    CarryOutAssessmentForm, CheckResultsForm
 from .models import Assessment, Problem, Answer, AnswerGiven, Result
 from accounts.models import User
 from core.views import home
@@ -564,8 +565,10 @@ def find_assessment(request):
         first = Result.objects.filter(student=student, assessment=search).first()
         Result.objects.filter(student=student, assessment=search).exclude(pk=first.pk).delete()
         assessment_already_answered = Result.objects.get(student=student, assessment=search)
-    else:
+    elif assessments_already_answered:
         assessment_already_answered = Result.objects.get(student=student, assessment=search)
+    else:
+        assessment_already_answered = None
 
     template_name = 'find_assessment.html'
 
@@ -721,5 +724,29 @@ def finish_assessment(request, assessment_id):
         'errors_number': errors_number,
         'correct_answers_percentage': correct_answers_percentage,
         'assessment_already_answered': assessment_already_answered,
+    }
+    return render(request, template_name, context)
+
+
+def check_results(request):
+    # Initialize check results form.
+    check_results_form = CheckResultsForm()
+
+    # Display all student results.
+    if request.method == 'POST':
+        check_results_form = CheckResultsForm(request.POST)
+        if check_results_form.is_valid():
+            student_id = check_results_form.cleaned_data['student_id']
+            print(student_id)
+            student = User.objects.get(id=student_id, role='Student')
+            print(student)
+            student_results = Result.objects.filter(student=student)
+
+    template_name = 'check_results.html'
+
+    context = {
+        'check_results_form': check_results_form,
+        'student_results': student_results,
+        'student': student,
     }
     return render(request, template_name, context)

@@ -1,0 +1,28 @@
+{% extends 'home.html' %}
+
+{% block title %}Check Results{% endblock %}
+
+
+{% block main-content-teacher %}
+
+<!--Search Box.-->
+<h2>Check student results</h2>
+<form action="{% url 'check-results' %}" method="post">
+    {% csrf_token %}
+    {{ check_results_form.as_p }}
+    <input type="submit" value="Search">
+</form>
+
+<h2 id="student-results">Student "{{ student }}" results:</h2>
+{% if student_results %}
+{% for result in student_results %}
+<ul>
+    <h2>{{ result }}</h2>
+    <h2>Result: {{ result.correct_answers_percentage }}%</h2>
+</ul>
+{% endfor %}
+{% else %}
+{% endif %}
+
+{% endblock %}
+

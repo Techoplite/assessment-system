@@ -42,3 +42,6 @@ class CarryOutAssessmentForm(forms.Form):
         super(CarryOutAssessmentForm, self).__init__(**kwargs)
         self.fields['answer'].choices = choices
 
+
+class CheckResultsForm(forms.Form):
+    student_id = forms.IntegerField(localize=True)

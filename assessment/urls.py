@@ -18,4 +18,5 @@ urlpatterns = [
     path('find-assessment/', views.find_assessment, name='find-assessment'),
     path('start-assessment/<int:assessment_id>/question/<int:question_id>/', views.start_assessment, name='start-assessment'),
     path('finish-assessment/<int:assessment_id>/', views.finish_assessment, name='finish-assessment'),
+    path('check-results/', views.check_results, name='check-results'),
 ]

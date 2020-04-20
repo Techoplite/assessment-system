@@ -77,8 +77,8 @@ a:hover.navbar-button {
 }
 
 #messages {
-  padding-left: 25%;
-  padding-right: 25%;
+  padding-left: 30%;
+  padding-right: 30%;
 }
 
 ul.messages {
@@ -181,7 +181,7 @@ label {
   margin-top: 0px;
   color: #3366ff;
 }
-input[type=text], select {
+input[type=text],[type=email], [type=password], select {
 font-family: 'Armata';
   color: #595959;
   font-weight: bold;
@@ -517,10 +517,7 @@ h2#editable-problem:hover {
   text-shadow: 0.5px 0.5px #00b300;
 }
 
-input {
-    display: block;
-    width: 100%;
-}
+
 
 a#next {
   font-family: 'Armata';
@@ -558,4 +555,8 @@ a#finish {
 
 a#next:finish {
   background-color: #ff4d4d;
+}
+
+h2#student-results {
+    margin-bottom: 30px;
 }
