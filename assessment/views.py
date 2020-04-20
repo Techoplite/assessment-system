@@ -729,6 +729,11 @@ def finish_assessment(request, assessment_id):
 
 
 def check_results(request):
+    student_id = None
+    student_results = None
+    student = None
+    student_not_existing = False
+
     # Initialize check results form.
     check_results_form = CheckResultsForm()
 
@@ -737,10 +742,21 @@ def check_results(request):
         check_results_form = CheckResultsForm(request.POST)
         if check_results_form.is_valid():
             student_id = check_results_form.cleaned_data['student_id']
-            print(student_id)
-            student = User.objects.get(id=student_id, role='Student')
-            print(student)
-            student_results = Result.objects.filter(student=student)
+            student_searched = User.objects.filter(id=student_id, role='Student')
+            if student_searched:
+                student = User.objects.get(id=student_id, role='Student')
+                student_results = Result.objects.filter(student=student)
+            else:
+                student = None
+                student_results = None
+                student_not_existing = True
+                print(student_not_existing)
+
+    # Fetch the current user.
+    current_user = request.user
+
+    # Fetch the user assessments.
+    user_assessments = Assessment.objects.filter(creator__id=current_user.id).exclude(title='')
 
     template_name = 'check_results.html'
 
@@ -748,5 +764,8 @@ def check_results(request):
         'check_results_form': check_results_form,
         'student_results': student_results,
         'student': student,
+        'user_assessments': user_assessments,
+        'student_not_existing': student_not_existing,
+        'student_id': student_id,
     }
     return render(request, template_name, context)

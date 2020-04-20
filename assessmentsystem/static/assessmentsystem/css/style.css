@@ -558,5 +558,9 @@ a#next:finish {
 }
 
 h2#student-results {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
+}
+
+form {
+  padding: inherit;
 }

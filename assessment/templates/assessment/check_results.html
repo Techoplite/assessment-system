@@ -6,13 +6,18 @@
 {% block main-content-teacher %}
 
 <!--Search Box.-->
-<h2>Check student results</h2>
+<h1>Check student results</h1>
 <form action="{% url 'check-results' %}" method="post">
     {% csrf_token %}
     {{ check_results_form.as_p }}
     <input type="submit" value="Search">
 </form>
 
+{% if student_not_existing == True %}
+<h3>There is no student with ID "{{ student_id }}".</h3>
+{% elif student == None %}
+<h3>Please enter a student ID.</h3>
+{% elif student %}
 <h2 id="student-results">Student "{{ student }}" results:</h2>
 {% if student_results %}
 {% for result in student_results %}
@@ -22,6 +27,7 @@
 </ul>
 {% endfor %}
 {% else %}
+{% endif %}
 {% endif %}
 
 {% endblock %}
