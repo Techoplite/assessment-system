@@ -568,3 +568,12 @@ form {
 ul.student-results {
     margin-left: 15px;
 }
+
+h2#attention {
+  color: red;
+}
+
+h2.welcome {
+    margin-top: 0px;
+    font-size: 150%;
+}

@@ -1,10 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from assessment.models import Assessment
 from accounts.models import User
 from assessment.models import Result
 
 
 def home(request):
+
+    # Redirect admin user to the admin page.
+    if not request.user.is_anonymous and request.user.is_admin:
+        return redirect('/admin/')
+
     template_name = 'home.html'
     student_results = None
 
@@ -20,9 +25,13 @@ def home(request):
 
     else:
         user_assessments = None
+
+    welcome_text = 'Welcome to the Assessment System'
+
     context = {
         'user_assessments': user_assessments,
         'student_results': student_results,
+        'welcome_text': welcome_text,
     }
     return render(request, template_name, context)
 

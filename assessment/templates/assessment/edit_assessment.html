@@ -37,8 +37,8 @@ No assessment to edit.
         <ul>{{ problem }}</ul>
         <a class="delete-problem" href="{% url 'delete-problem' problem.id %}">Delete</a>
         {% if not data.0 %}
-        ATTENTION: this problem is missing an available answer.
-        Please create one.
+        <h2 id="attention">ATTENTION: this problem is missing an available answer.
+        Please create one.</h2>
         {% else %}
         <br>Available Answers:
         {% for answer in data.0 %}
