@@ -35,3 +35,32 @@
  2. Fix create/add problem with only one answer available.
  3. Write tests.
  
+ ## Use Cases
+ 
+ ##### Sign up as a Teacher
+ ![](teacher-sign-up.gif)
+ 
+ ##### Sign up as a Student
+ ![](student-sign-up.gif)
+ 
+ ##### Log out
+ ![](logout.gif)
+ 
+ ## Teacher side
+ 
+ ##### Create Assessment
+ ![](create-assessment.gif)
+ 
+ ##### Edit Assessment
+ ![](edit-assessment.gif)
+
+ ##### Delete Assessment
+  ![](delete-assessment.gif)
+  
+ ##### Check Student Results
+   ![](check-results.gif)
+  
+ ## Student side
+ 
+ ##### Carry out assessment
+  ![](carry-out-assessment.gif)
